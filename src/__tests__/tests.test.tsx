@@ -3,7 +3,7 @@ import Tests from "@/pages/tests";
 
 describe("Tests", () => {
   it("renders a heading", () => {
-    render(<Tests />);
+    render(<Tests tests={[]} />);
 
     const heading = screen.getByRole("heading", {
       name: /Tests/i,
