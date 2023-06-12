@@ -4,8 +4,17 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:import/recommended",
     "plugin:react-hooks/recommended",
-    "plugin:jsx-a11y/recommended",
+    "plugin:jsx-a11y/recommended", // TODO: check if this lib is needed
     "next/core-web-vitals"
   ],
-  "plugins": ["@typescript-eslint", "import", "react-hooks", "jsx-a11y"]
+  "plugins": ["@typescript-eslint", "import", "react-hooks", "jsx-a11y"],
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": ["@/features/*/*"]
+      }
+    ],
+    "import/no-cycle": "error"
+  }
 }
