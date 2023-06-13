@@ -1,16 +1,18 @@
 import prisma from "@/lib/prisma";
 
+interface TagDTO {
+  id: string;
+  title: string;
+}
+
 export interface TestDTO {
   id: string;
   title: string;
   description: string | null;
-  tags: {
-    id: string;
-    title: string;
-  }[];
+  tags: TagDTO[];
 }
 
-export class TestsRepository {
+export const testsService = {
   async getAll(): Promise<TestDTO[]> {
     return await prisma.test.findMany({
       where: { published: true },
@@ -26,5 +28,5 @@ export class TestsRepository {
         },
       },
     });
-  }
-}
+  },
+};
