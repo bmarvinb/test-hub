@@ -1,9 +1,20 @@
 "use client";
 
-import { IS_PRODUCTION } from "@/config/constants";
+import { IS_DEVELOPMENT, IS_PRODUCTION } from "@/config/constants";
 import { Inter } from "next/font/google";
-import Link from "next/link";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./globals.css";
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+      useErrorBoundary: true,
+    },
+  },
+});
 
 if (!IS_PRODUCTION) {
   import("@/mocks").then(({ initializeMocks }) => initializeMocks());
@@ -20,21 +31,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <section>
-          <nav>
-            <ul>
-              <li>
-                <Link href="/">Home</Link>
-              </li>
-              <li>
-                <Link href="/tests">Tests</Link>
-              </li>
-              <li>
-                <Link href="/about">About</Link>
-              </li>
-            </ul>
-          </nav>
-
-          <main>{children}</main>
+          <QueryClientProvider client={queryClient}>
+            {IS_DEVELOPMENT && <ReactQueryDevtools initialIsOpen={false} />}
+            {children}
+          </QueryClientProvider>
         </section>
       </body>
     </html>
