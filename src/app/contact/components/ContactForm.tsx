@@ -17,17 +17,17 @@ import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/Textarea";
 
 export interface ContactFormProps {
-  onSubmit: (email: string, question: string) => void;
   isLoading: boolean;
   isSuccess: boolean;
   isError: boolean;
+  onSubmit: (email: string, question: string) => void;
 }
 
 const formSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address.",
   }),
-  question: z.string().trim().min(3),
+  question: z.string(),
 });
 
 export const ContactForm = (props: ContactFormProps) => {
