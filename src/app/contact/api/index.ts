@@ -9,11 +9,19 @@ export interface ContactService {
 
 export const ContactService: ContactService = {
   send: async (payload) => {
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-    const result = await res.json();
-    return result;
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const error = await res.json();
+        return Promise.reject(error?.error);
+      }
+      return await res.json();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   },
 };

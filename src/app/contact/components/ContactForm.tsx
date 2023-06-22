@@ -18,13 +18,16 @@ import { Textarea } from "@/components/ui/Textarea";
 
 export interface ContactFormProps {
   onSubmit: (email: string, question: string) => void;
+  isLoading: boolean;
+  isSuccess: boolean;
+  isError: boolean;
 }
 
 const formSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address.",
   }),
-  question: z.string().trim().min(5),
+  question: z.string().trim().min(3),
 });
 
 export const ContactForm = (props: ContactFormProps) => {
@@ -50,7 +53,11 @@ export const ContactForm = (props: ContactFormProps) => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Type your email" {...field} />
+                <Input
+                  disabled={props.isLoading}
+                  placeholder="Please provide your email"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -64,7 +71,11 @@ export const ContactForm = (props: ContactFormProps) => {
             <FormItem>
               <FormLabel>Question</FormLabel>
               <FormControl>
-                <Textarea placeholder="Type your question" {...field} />
+                <Textarea
+                  disabled={props.isLoading}
+                  placeholder="Your question"
+                  {...field}
+                />
               </FormControl>
               <FormDescription>
                 Ask whenever you have a question.
@@ -74,7 +85,9 @@ export const ContactForm = (props: ContactFormProps) => {
           )}
         />
 
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={props.isLoading}>
+          Submit
+        </Button>
       </form>
     </Form>
   );
