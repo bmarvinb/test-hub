@@ -1,29 +1,28 @@
 "use client";
 
-import { ContactService } from "./api";
-import { ContactForm } from "./components/ContactForm";
-import useContactHook from "./hooks/useContact";
+import { ContactForm } from "@/app/contact/components/ContactForm";
+import { useContactHook } from "@/app/contact/hooks/useContact";
+import { contactService } from "@/app/contact/services/contact";
 import { useToast } from "@/lib/hooks/use-toast";
 
 export default function ContactPage() {
   const toast = useToast();
 
-  const { send, status } = useContactHook(
-    ContactService,
-    (error) => {
+  const { send, status } = useContactHook(contactService, {
+    onError: (message) => {
       toast.toast({
         variant: "destructive",
-        title: "Oops",
-        description: error,
+        title: "Error",
+        description: message,
       });
     },
-    () => {
+    onSuccess: () => {
       toast.toast({
-        title: "Hooray!",
+        title: "Success",
         description: "We will contact you soon.",
       });
-    }
-  );
+    },
+  });
 
   const onSubmit = (email: string, question: string) => {
     send({ email, question });

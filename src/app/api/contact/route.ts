@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
   if (!response.success) {
     return NextResponse.json(
-      { message: "Invalid request parameters", error: response.error },
+      { message: "Invalid request parameters", errors: [response.error] },
       {
         status: 400,
       }
@@ -35,6 +35,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         message: "Error while sending email",
+        errors: [],
       },
       {
         status: 400,
