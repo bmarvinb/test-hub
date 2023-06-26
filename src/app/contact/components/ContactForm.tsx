@@ -16,11 +16,13 @@ import { Input } from "@/components/ui/Input";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/Textarea";
 
+export type ContactFormModel = z.infer<typeof formSchema>;
+
 export interface ContactFormProps {
   isLoading: boolean;
   isSuccess: boolean;
   isError: boolean;
-  onSubmit: (email: string, question: string) => void;
+  onSubmit: (data: ContactFormModel) => void;
 }
 
 const formSchema = z.object({
@@ -40,7 +42,10 @@ export const ContactForm = (props: ContactFormProps) => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    props.onSubmit(values.email, values.question);
+    props.onSubmit({
+      email: values.email,
+      question: values.question,
+    });
   };
 
   return (

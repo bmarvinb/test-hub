@@ -4,8 +4,13 @@ export interface ContactDTO {
 }
 
 export interface ContactService {
-  send: (payload: ContactDTO) => Promise<void>;
+  send: (data: ContactDTO) => Promise<void>;
 }
+
+export type BackendError<E = unknown> = {
+  message: string;
+  errors?: E[];
+};
 
 export const contactService: ContactService = {
   send: async (data) => {

@@ -1,31 +1,48 @@
 "use client";
 
-import { ContactForm } from "@/app/contact/components/ContactForm";
-import { useContactHook } from "@/app/contact/hooks/useContact";
-import { contactService } from "@/app/contact/services/contact";
+import {
+  ContactForm,
+  ContactFormModel,
+} from "@/app/contact/components/ContactForm";
+import {
+  ContactDTO,
+  BackendError as ServerError,
+  contactService,
+} from "@/app/contact/services/contact";
 import { useToast } from "@/lib/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
 
 export default function ContactPage() {
   const toast = useToast();
+  const {
+    mutate: send,
+    isLoading,
+    isError,
+    isSuccess,
+  } = useMutation<void, ServerError, ContactDTO>(
+    async (data) => contactService.send(data),
+    {
+      onSuccess: () => {
+        toast.toast({
+          title: "Success",
+          description: "We will contact you soon.",
+        });
+      },
+      onError: (error) => {
+        toast.toast({
+          variant: "destructive",
+          title: "Error",
+          description: error.message,
+        });
+      },
+    }
+  );
 
-  const { send, status } = useContactHook(contactService, {
-    onError: (message) => {
-      toast.toast({
-        variant: "destructive",
-        title: "Error",
-        description: message,
-      });
-    },
-    onSuccess: () => {
-      toast.toast({
-        title: "Success",
-        description: "We will contact you soon.",
-      });
-    },
-  });
-
-  const onSubmit = (email: string, question: string) => {
-    send({ email, question });
+  const onSubmit = (data: ContactFormModel) => {
+    send({
+      email: data.email,
+      question: data.question,
+    });
   };
 
   return (
@@ -34,9 +51,9 @@ export default function ContactPage() {
 
       <ContactForm
         onSubmit={onSubmit}
-        isLoading={status === "loading"}
-        isError={status === "error"}
-        isSuccess={status === "success"}
+        isLoading={isLoading}
+        isError={isError}
+        isSuccess={isSuccess}
       />
     </div>
   );
