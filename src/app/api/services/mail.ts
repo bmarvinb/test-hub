@@ -1,10 +1,10 @@
 import { createTransport, SendMailOptions } from "nodemailer";
 
-export interface MailService {
+interface MailService {
   sendMail: (from: string, text: string, subject: string) => Promise<void>;
 }
 
-export const mail: MailService = {
+const mail: MailService = {
   sendMail: async (from, text, subject) => {
     const mailOptions: SendMailOptions = {
       to: process.env.GMAIL_ACCOUNT,
@@ -24,3 +24,6 @@ const transporter = createTransport({
     pass: process.env.GMAIL_PASSWORD,
   },
 });
+
+export type { MailService };
+export { mail };

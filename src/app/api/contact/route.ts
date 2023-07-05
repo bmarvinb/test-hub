@@ -2,14 +2,14 @@ import { mail } from "@/app/api/services/mail";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-const schemaContactDTO = z.object({
+const schema = z.object({
   email: z.string().email(),
   question: z.string(),
 });
 
 export async function POST(req: Request) {
   const data = JSON.parse(await req.json());
-  const response = schemaContactDTO.safeParse(data);
+  const response = schema.safeParse(data);
 
   if (!response.success) {
     return NextResponse.json(
