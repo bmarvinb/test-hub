@@ -21,7 +21,6 @@ export const contactService: ContactService = {
       });
       if (!res.ok) {
         const error = await res.json();
-        console.error("Error while sending email", error);
         return Promise.reject(error);
       }
       return await res.json();
