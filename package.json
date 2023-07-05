@@ -13,7 +13,7 @@
     "format:fix": "npm run prettier -- --write",
     "types": "tsc --noEmit --pretty --watch",
     "types:check": "tsc --noEmit --pretty",
-    "format": "prettier -w .",
+    "format": "prettier -w ./src",
     "test": "jest --watch",
     "test:ci": "jest --ci"
   },
