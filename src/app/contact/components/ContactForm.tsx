@@ -33,7 +33,7 @@ const formSchema = z.object({
 });
 
 export const ContactForm = (props: ContactFormProps) => {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<ContactFormModel>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
@@ -41,7 +41,7 @@ export const ContactForm = (props: ContactFormProps) => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: ContactFormModel) => {
     props.onSubmit({
       email: values.email,
       question: values.question,
