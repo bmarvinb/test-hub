@@ -18,7 +18,7 @@ describe("ContactPage", () => {
           return res(
             ctx.delay(200),
             ctx.status(400),
-            ctx.json({ message: "Mail server is unavailable", errors: [] })
+            ctx.json({ message: "Mail server is unavailable" })
           );
         })
       );

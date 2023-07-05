@@ -9,7 +9,7 @@ export const contactHandlers = [
       return res(
         ctx.delay(300),
         ctx.status(400),
-        ctx.json({ message: "Invalid email", errors: [] })
+        ctx.json({ message: "Invalid email" })
       );
     }
 
@@ -17,7 +17,7 @@ export const contactHandlers = [
       return res(
         ctx.delay(300),
         ctx.status(500),
-        ctx.json({ message: "Server error", errors: [] })
+        ctx.json({ message: "Server error" })
       );
     }
 

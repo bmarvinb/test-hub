@@ -2,20 +2,20 @@ import { mail } from "@/app/api/services/mail";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-const schema = z.object({
+const schemaContactDTO = z.object({
   email: z.string().email(),
   question: z.string(),
 });
 
 export async function POST(req: Request) {
   const data = JSON.parse(await req.json());
-  const response = schema.safeParse(data);
+  const response = schemaContactDTO.safeParse(data);
 
   if (!response.success) {
     return NextResponse.json(
       {
         message: "Invalid request parameters",
-        errors: [response.error.issues],
+        issues: response.error.issues,
       },
       {
         status: 400,
@@ -42,7 +42,6 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         message: "Error while sending email",
-        errors: [],
       },
       {
         status: 400,

@@ -30,15 +30,10 @@ async function fetcher<T = unknown>(
     config.body = JSON.stringify(body);
   }
 
-  try {
-    const response = await fetch(endpoint, config);
-    if (!response.ok) {
-      const error = await response.json();
-      return Promise.reject(error);
-    }
-    return await response.json();
-  } catch (error) {
-    console.error(error);
-    throw error;
+  const response = await fetch(endpoint, config);
+  if (!response.ok) {
+    const error = await response.json();
+    return Promise.reject(error);
   }
+  return await response.json();
 }
