@@ -1,25 +1,8 @@
 import ContactPage from "@/app/contact/page";
-import { Toaster } from "@/components/ui/Toaster";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  fireEvent,
-  screen,
-  render as testingLibraryRender,
-} from "@testing-library/react";
+import { render } from "@/test/utils";
+import { fireEvent, screen } from "@testing-library/react";
 import { rest } from "msw";
 import { SetupServer, setupServer } from "msw/node";
-
-const render = () => {
-  const queryClient = new QueryClient();
-  testingLibraryRender(
-    <QueryClientProvider client={queryClient}>
-      <>
-        <ContactPage />
-        <Toaster />
-      </>
-    </QueryClientProvider>
-  );
-};
 
 describe("ContactPage", () => {
   let server: SetupServer;
@@ -43,22 +26,19 @@ describe("ContactPage", () => {
     });
 
     it("should display error message after form submitted", async () => {
-      render();
+      render(<ContactPage />);
 
       const button = screen.getByRole("button", { name: /Submit/i });
-
       fireEvent.input(screen.getByRole("textbox", { name: /email/i }), {
         target: {
           value: "test@mail.com",
         },
       });
-
       fireEvent.input(screen.getByLabelText("Question"), {
         target: {
           value: "Awesome site!",
         },
       });
-
       fireEvent.submit(button);
 
       expect(
@@ -67,7 +47,7 @@ describe("ContactPage", () => {
     });
   });
 
-  describe("Successfull scenarios", () => {
+  describe("Success scenarios", () => {
     beforeEach(() => {
       server = setupServer(
         rest.post("/api/contact", (_req, res, ctx) => {
@@ -82,10 +62,9 @@ describe("ContactPage", () => {
     });
 
     it("should display required error when value is invalid", async () => {
-      render();
+      render(<ContactPage />);
 
       const button = screen.getByRole("button", { name: /Submit/i });
-
       fireEvent.submit(button);
 
       expect(
@@ -94,20 +73,18 @@ describe("ContactPage", () => {
     });
 
     it("should not display error when value is valid", async () => {
-      render();
+      render(<ContactPage />);
 
       fireEvent.input(screen.getByRole("textbox", { name: /email/i }), {
         target: {
           value: "test@mail.com",
         },
       });
-
       fireEvent.input(screen.getByLabelText("Question"), {
         target: {
           value: "Awesome site!",
         },
       });
-
       fireEvent.submit(screen.getByRole("button", { name: /Submit/i }));
 
       expect(await screen.findByText(/Success/i)).toBeInTheDocument();

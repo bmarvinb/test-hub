@@ -19,7 +19,7 @@ const queryClient = new QueryClient({
 });
 
 if (!IS_PRODUCTION) {
-  import("@/mocks").then(({ initializeMocks }) => initializeMocks());
+  import("@/test/mocks").then(({ initializeMocks }) => initializeMocks());
 }
 
 const inter = Inter({ subsets: ["latin"] });
