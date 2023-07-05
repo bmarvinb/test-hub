@@ -1,4 +1,4 @@
-import { sendMail } from "@/app/api/services/mail";
+import { mail } from "@/app/api/services/mail";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -8,12 +8,15 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
-  const data = await req.json();
+  const data = JSON.parse(await req.json());
   const response = schema.safeParse(data);
 
   if (!response.success) {
     return NextResponse.json(
-      { message: "Invalid request parameters", errors: [response.error] },
+      {
+        message: "Invalid request parameters",
+        errors: [response.error.issues],
+      },
       {
         status: 400,
       }
@@ -23,7 +26,11 @@ export async function POST(req: Request) {
   const { email, question } = response.data;
 
   try {
-    await sendMail(email, question);
+    await mail.sendMail(
+      email,
+      `From: ${email}\nQuestion: ${question}`,
+      "New contact form submission"
+    );
     return NextResponse.json(
       { message: "Email sent successfully" },
       {

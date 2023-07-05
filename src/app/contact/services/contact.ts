@@ -1,3 +1,5 @@
+import { client } from "@/lib/client";
+
 export interface ContactDTO {
   email: string;
   question: string;
@@ -13,20 +15,5 @@ export type BackendError<E = unknown> = {
 };
 
 export const contactService: ContactService = {
-  send: async (data) => {
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) {
-        const error = await res.json();
-        return Promise.reject(error);
-      }
-      return await res.json();
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  },
+  send: (data) => client.post("/api/contact", JSON.stringify(data)),
 };

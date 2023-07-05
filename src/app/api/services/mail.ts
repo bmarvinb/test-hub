@@ -1,20 +1,26 @@
-import nodemailer from "nodemailer";
+import { createTransport, SendMailOptions } from "nodemailer";
 
-const transporter = nodemailer.createTransport({
+export interface MailService {
+  sendMail: (from: string, text: string, subject: string) => Promise<void>;
+}
+
+export const mail: MailService = {
+  sendMail: async (from, text, subject) => {
+    const mailOptions: SendMailOptions = {
+      to: process.env.GMAIL_ACCOUNT,
+      from,
+      subject,
+      text,
+    };
+
+    transporter.sendMail(mailOptions);
+  },
+};
+
+const transporter = createTransport({
   service: "gmail",
   auth: {
     user: process.env.GMAIL_ACCOUNT,
     pass: process.env.GMAIL_PASSWORD,
   },
 });
-
-export async function sendMail(email: string, question: string) {
-  const mailOptions = {
-    from: email,
-    to: process.env.GMAIL_ACCOUNT,
-    subject: "New contact form submission",
-    text: `From: ${email}\n\nQuestion: ${question}`,
-  };
-
-  return transporter.sendMail(mailOptions);
-}

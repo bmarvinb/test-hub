@@ -1,6 +1,6 @@
 "use client";
 
-import { IS_DEVELOPMENT, IS_PRODUCTION } from "@/config/constants";
+import { IS_DEVELOPMENT } from "@/config/constants";
 import { Inter } from "next/font/google";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -17,10 +17,6 @@ const queryClient = new QueryClient({
     },
   },
 });
-
-if (!IS_PRODUCTION) {
-  import("@/test/mocks").then(({ initializeMocks }) => initializeMocks());
-}
 
 const inter = Inter({ subsets: ["latin"] });
 
