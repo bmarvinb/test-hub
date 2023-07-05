@@ -13,7 +13,7 @@ type ContactDTO = {
 type ContactError = z.infer<typeof errorSchema>;
 
 const errorSchema = z.object({
-  message: z.number(),
+  message: z.string(),
   issues: z.unknown().array().optional(),
 });
 
