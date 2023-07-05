@@ -7,14 +7,9 @@ export interface ApiClient {
 
 export const client: ApiClient = {
   get: (endpoint) => fetcher(endpoint, { method: "GET" }),
-
-  post: (endpoint: string, body: BodyInit) =>
-    fetcher(endpoint, { body, method: "POST" }),
-
-  patch: (endpoint: string, body: BodyInit) =>
-    fetcher(endpoint, { body, method: "PATCH" }),
-
-  delete: (endpoint: string) => fetcher(endpoint, { method: "DELETE" }),
+  post: (endpoint, body) => fetcher(endpoint, { body, method: "POST" }),
+  patch: (endpoint, body) => fetcher(endpoint, { body, method: "PATCH" }),
+  delete: (endpoint) => fetcher(endpoint, { method: "DELETE" }),
 };
 
 async function fetcher<T = unknown>(
