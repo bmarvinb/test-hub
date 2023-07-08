@@ -1,4 +1,4 @@
-import { mail } from "@/app/api/services/mail";
+import { mail } from "@/app/[lng]/api/services/mail";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 

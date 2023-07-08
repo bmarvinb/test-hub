@@ -3,17 +3,25 @@
 import {
   ContactForm,
   ContactFormModel,
-} from "@/app/contact/components/ContactForm";
+} from "@/app/[lng]/contact/components/ContactForm";
 import {
   ContactError,
   ContactDTO,
   contactService,
-} from "@/app/contact/services/contact";
+} from "@/app/[lng]/contact/services/contact";
+import { useTranslation } from "@/app/i18n/client";
 import { Title } from "@/components/ui/Title";
 import { useToast } from "@/lib/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 
-export default function ContactPage() {
+export interface ContactPageProps {
+  params: {
+    lng: string;
+  };
+}
+
+export default function ContactPage(props: ContactPageProps) {
+  const { t } = useTranslation(props.params.lng, "contact-page");
   const toast = useToast();
   const {
     mutate: send,
@@ -25,14 +33,14 @@ export default function ContactPage() {
     {
       onSuccess: () => {
         toast.toast({
-          title: "Success",
-          description: "We will contact you soon.",
+          title: t("successTitleMessage"),
+          description: t("successDescriptionMessage"),
         });
       },
       onError: (error) => {
         toast.toast({
           variant: "destructive",
-          title: "Error",
+          title: t("errorTitleMessage"),
           description: error.message,
         });
       },
@@ -48,9 +56,12 @@ export default function ContactPage() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-6">
-      <Title size={"h1"}>Contact us</Title>
+      <Title size={"h1"} data-testid="page-title">
+        {t("title")}
+      </Title>
 
       <ContactForm
+        lng={props.params.lng}
         onSubmit={onSubmit}
         isLoading={isLoading}
         isError={isError}

@@ -1,5 +1,3 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/Button";
@@ -15,10 +13,12 @@ import {
 import { Input } from "@/components/ui/Input";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/Textarea";
+import { useTranslation } from "@/app/i18n/client";
 
 export type ContactFormModel = z.infer<typeof formSchema>;
 
 export interface ContactFormProps {
+  lng: string;
   isLoading: boolean;
   isSuccess: boolean;
   isError: boolean;
@@ -27,12 +27,14 @@ export interface ContactFormProps {
 
 const formSchema = z.object({
   email: z.string().email({
-    message: "Please enter a valid email address.",
+    message: "Invalid email address", // TODO: how to translate this?
   }),
   question: z.string(),
 });
 
 export const ContactForm = (props: ContactFormProps) => {
+  const { t } = useTranslation(props.lng, "contact-page");
+
   const form = useForm<ContactFormModel>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,11 +58,12 @@ export const ContactForm = (props: ContactFormProps) => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t("emailLabel")}</FormLabel>
               <FormControl>
                 <Input
                   disabled={props.isLoading}
-                  placeholder="Please provide your email"
+                  placeholder={t("emailPlaceholder")}
+                  data-testid="email"
                   {...field}
                 />
               </FormControl>
@@ -74,24 +77,23 @@ export const ContactForm = (props: ContactFormProps) => {
           name="question"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Question</FormLabel>
+              <FormLabel>{t("questionLabel")}</FormLabel>
               <FormControl>
                 <Textarea
                   disabled={props.isLoading}
-                  placeholder="Your question"
+                  placeholder={t("questionPlaceholder")}
+                  data-testid="question"
                   {...field}
                 />
               </FormControl>
-              <FormDescription>
-                Ask whenever you have a question.
-              </FormDescription>
+              <FormDescription>{t("questionDescription")}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <Button type="submit" disabled={props.isLoading}>
-          Submit
+        <Button type="submit" disabled={props.isLoading} data-testid="submit">
+          {t("submitButton")}
         </Button>
       </form>
     </Form>
