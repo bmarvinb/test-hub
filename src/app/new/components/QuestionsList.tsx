@@ -1,5 +1,5 @@
 import { QuestionType } from "../types";
-import { TestQuestionModel } from "./QuestionEditor";
+import { TestQuestionModel } from "./QuestionForm";
 
 const QuestionListItem = (props: {
   question: TestQuestionModel;
@@ -9,7 +9,7 @@ const QuestionListItem = (props: {
   switch (question.type) {
     case QuestionType.SingleChoice:
       return (
-        <div className="text-sm">
+        <div className="text-sm mb-2">
           <span className="text-gray-500">{order}. </span>
           {question.question}
         </div>

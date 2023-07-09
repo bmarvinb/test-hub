@@ -76,8 +76,6 @@ export const SingleChoiceQuestionForm = (
   };
 
   const onSubmit = (values: SingleChoiceQuestionModel) => {
-    console.log("single choice question values", values);
-
     props.onSubmit(values);
   };
 
@@ -186,11 +184,7 @@ export const SingleChoiceQuestionForm = (
           })
         )}
 
-        <Button
-          variant="default"
-          type="submit"
-          onClick={() => console.log("clicked")}
-        >
+        <Button variant="default" type="submit">
           Create
         </Button>
       </form>
