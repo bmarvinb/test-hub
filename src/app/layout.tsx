@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./globals.css";
 import { Toaster } from "@/components/ui/Toaster";
 import React from "react";
+import { TooltipProvider } from "@/components/ui/Tooltip";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,9 +31,11 @@ export default function RootLayout({
       <body className={inter.className}>
         <section>
           <QueryClientProvider client={queryClient}>
-            {IS_DEVELOPMENT && <ReactQueryDevtools initialIsOpen={false} />}
-            {children}
-            <Toaster />
+            <TooltipProvider>
+              {IS_DEVELOPMENT && <ReactQueryDevtools initialIsOpen={false} />}
+              {children}
+              <Toaster />
+            </TooltipProvider>
           </QueryClientProvider>
         </section>
       </body>

@@ -7,47 +7,78 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Textarea } from "@/components/ui/Textarea";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/Tooltip";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CheckCircle2, Circle, XCircle } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
+import { QuestionType } from "../types";
 
 export type SingleChoiceQuestionModel = z.infer<typeof SingleChoiceQuestion>;
 
 export const SingleChoiceQuestion = z.object({
-  question: z.string().min(1),
+  type: z.literal(QuestionType.SingleChoice),
+  question: z.string(),
   options: z.array(
     z.object({
-      value: z.string().min(1, { message: "Question option can't be empty" }),
+      value: z.string(),
+      isAnswer: z.boolean(),
     })
   ),
-  answer: z.string().min(1),
 });
 
-export const SingleChoiceQuestionForm = () => {
+export interface SingleChoiceQuestionFormProps {
+  onSubmit: (data: SingleChoiceQuestionModel) => void;
+}
+
+export const SingleChoiceQuestionForm = (
+  props: SingleChoiceQuestionFormProps
+) => {
   const form = useForm<SingleChoiceQuestionModel>({
     resolver: zodResolver(SingleChoiceQuestion),
     defaultValues: {
+      type: QuestionType.SingleChoice,
+      question: "Sample question",
       options: [
-        {
-          value: "",
-        },
+        { value: "Option 1", isAnswer: false },
+        { value: "Option 2", isAnswer: true },
       ],
     },
   });
 
-  const { fields, append } = useFieldArray({
+  const { fields, append, remove, update } = useFieldArray({
     rules: { minLength: 0 },
     control: form.control,
     name: "options",
   });
 
+  const markAsAnswer = (id: string) => {
+    fields.forEach((field, index) =>
+      update(index, { ...field, isAnswer: field.id === id })
+    );
+  };
+
+  const unmarkAsAnswer = (id: string) => {
+    fields.forEach((field, index) => {
+      if (field.id !== id) {
+        return;
+      }
+      update(index, { ...field, isAnswer: false });
+    });
+  };
+
   const onSubmit = (values: SingleChoiceQuestionModel) => {
-    console.log("submitted", values);
+    console.log("single choice question values", values);
+
+    props.onSubmit(values);
   };
 
   return (
@@ -62,59 +93,109 @@ export const SingleChoiceQuestionForm = () => {
               <FormControl>
                 <Textarea placeholder="Type your question" {...field} />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
 
         <div className="flex justify-between items-center">
-          <Label>Answers</Label>
+          <Label>Options</Label>
           <Button
+            type="button"
             variant="outline"
+            size="sm"
             onClick={() =>
               append({
                 value: "",
+                isAnswer: false,
               })
             }
           >
-            Add
+            Add option
           </Button>
         </div>
 
-        {fields.map((_, index) => {
-          return (
-            <FormField
-              key={index}
-              control={form.control}
-              name={`options.${index}`}
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormControl>
-                      <div className="flex items-center gap-4">
-                        <span className="text-sm text-gray-400">
-                          {index + 1}
-                        </span>
-                        <Input
-                          placeholder={`Question option`}
-                          value={field.value.value}
-                          onChange={(e) => {
-                            field.onChange({
-                              value: e.target.value,
-                            });
-                          }}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
-          );
-        })}
+        {fields.length === 0 ? (
+          <div className="text-gray-500 text-sm">No added options</div>
+        ) : (
+          fields.map((fieldData, index) => {
+            return (
+              <FormField
+                key={index}
+                control={form.control}
+                name={`options.${index}`}
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormControl>
+                        <div className="flex items-center gap-3">
+                          {fieldData.isAnswer ? (
+                            <Tooltip>
+                              <TooltipTrigger type="button">
+                                <CheckCircle2
+                                  type="button"
+                                  onClick={() => unmarkAsAnswer(fieldData.id)}
+                                  className="text-green-500 cursor-pointer"
+                                />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Unmark as answer</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          ) : (
+                            <Tooltip>
+                              <TooltipTrigger type="button">
+                                <Circle
+                                  type="button"
+                                  onClick={() => markAsAnswer(fieldData.id)}
+                                  className="text-gray-500 cursor-pointer"
+                                />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Mark as answer</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
 
-        <Button type="submit">Add question</Button>
+                          <Input
+                            placeholder={`Question option`}
+                            value={field.value.value}
+                            onChange={(e) => {
+                              field.onChange({
+                                value: e.target.value,
+                                isAnswer: false,
+                              });
+                            }}
+                          />
+
+                          <Tooltip>
+                            <TooltipTrigger type="button">
+                              <XCircle
+                                type="button"
+                                onClick={() => remove(index)}
+                                className="text-red-400"
+                              />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Remove option</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  );
+                }}
+              />
+            );
+          })
+        )}
+
+        <Button
+          variant="default"
+          type="submit"
+          onClick={() => console.log("clicked")}
+        >
+          Create
+        </Button>
       </form>
     </Form>
   );

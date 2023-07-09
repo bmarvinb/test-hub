@@ -14,31 +14,31 @@ import {
 import { Input } from "@/components/ui/Input";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/Textarea";
-import { Title } from "@/components/ui/Title";
-import { NewQuestionDialog } from "./NewQuestionDialog";
-import { TestQuestion } from "./QuestionEditor";
+import { QuestionDialog } from "./QuestionDialog";
+import {
+  QuestionEditor,
+  TestQuestion,
+  TestQuestionModel,
+} from "./QuestionEditor";
+import { Label } from "@/components/ui/Label";
+import { useState } from "react";
+import { QuestionsList } from "./QuestionsList";
 
-export interface TestEditorProps {
-  onSubmit: (data: TestEditorModel) => void;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface TestEditorProps {}
 
-export type TestEditorModel = z.infer<typeof formSchema>;
+export type TestEditorModel = z.infer<typeof testEditorSchema>;
 
-const TestTag = z.object({
-  id: z.string(),
-  name: z.string(),
-});
-
-const formSchema = z.object({
+const testEditorSchema = z.object({
   title: z.string(),
   description: z.string(),
-  tags: z.array(TestTag),
   questions: z.array(TestQuestion),
 });
 
-export const TestEditor = (_props: TestEditorProps) => {
+export const TestEditor = () => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const form = useForm<TestEditorModel>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(testEditorSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -46,15 +46,24 @@ export const TestEditor = (_props: TestEditorProps) => {
     },
   });
 
-  const onSubmit = (values: TestEditorModel) => {
-    console.log("values", values);
+  const onTestEditorFormSubmit = (data: TestEditorModel) => {
+    console.log("data", data);
+  };
+
+  const onQuestionFormSubmit = (question: TestQuestionModel) => {
+    console.log("question on top level", question);
+    form.setValue("questions", [...form.getValues().questions, question]);
+    setIsDialogOpen(false);
   };
 
   const questions = form.watch("questions");
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={form.handleSubmit(onTestEditorFormSubmit)}
+        className="space-y-8"
+      >
         <FormField
           control={form.control}
           name="title"
@@ -84,15 +93,20 @@ export const TestEditor = (_props: TestEditorProps) => {
         />
 
         <div className="flex justify-between items-center">
-          <Title size="h2">Questions</Title>
-          <NewQuestionDialog />
+          <Label>Questions</Label>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsDialogOpen(true)}
+          >
+            Add question
+          </Button>
+          <QuestionDialog isOpen={isDialogOpen}>
+            <QuestionEditor onSubmit={onQuestionFormSubmit} />
+          </QuestionDialog>
         </div>
 
-        <div>
-          {questions.length === 0 && (
-            <div className="text-gray-500">No questions</div>
-          )}
-        </div>
+        <QuestionsList questions={questions} />
 
         <Button type="submit">Create</Button>
       </form>

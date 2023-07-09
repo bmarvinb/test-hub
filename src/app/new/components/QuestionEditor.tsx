@@ -27,10 +27,6 @@ export interface QuestionEditorProps {
 
 export type TestQuestionModel = z.infer<typeof TestQuestion>;
 
-export interface NewQuestionDialogProps {
-  onSubmit: (data: TestQuestionModel) => void;
-}
-
 const MultipleChoiceQuestion = z.object({
   id: z.string(),
   type: z.literal(QuestionType.MultipleChoice),
@@ -64,9 +60,9 @@ const FormContent = (props: {
 }) => {
   switch (props.type) {
     case QuestionType.SingleChoice:
-      return <SingleChoiceQuestionForm />;
+      return <SingleChoiceQuestionForm onSubmit={props.onSubmit} />;
     case QuestionType.MultipleChoice:
-      return <div>Multiple choise form</div>;
+      return <div>Multiple choice form</div>;
     case QuestionType.NumberInput:
       return <div>Number input form</div>;
     case QuestionType.TextInput:
@@ -96,10 +92,10 @@ export const QuestionEditor = (props: QuestionEditorProps) => {
 
             <SelectContent>
               <SelectItem value={QuestionType.SingleChoice}>
-                Single choise
+                Single choice
               </SelectItem>
               <SelectItem value={QuestionType.MultipleChoice}>
-                Multiple choise
+                Multiple choice
               </SelectItem>
               <SelectItem value={QuestionType.NumberInput}>
                 Number input
