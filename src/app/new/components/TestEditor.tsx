@@ -14,19 +14,27 @@ import {
 import { Input } from "@/components/ui/Input";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/Textarea";
-
-export type TestEditorModel = z.infer<typeof formSchema>;
+import { Title } from "@/components/ui/Title";
+import { NewQuestionDialog } from "./NewQuestionDialog";
 
 export interface TestEditorProps {
   onSubmit: (data: TestEditorModel) => void;
 }
 
+export type TestEditorModel = z.infer<typeof formSchema>;
+
+const TestTag = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
 const formSchema = z.object({
   title: z.string(),
   description: z.string(),
+  tags: z.array(TestTag),
 });
 
-export const TestEditor = (props: TestEditorProps) => {
+export const TestEditor = (_props: TestEditorProps) => {
   const form = useForm<TestEditorModel>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,10 +44,7 @@ export const TestEditor = (props: TestEditorProps) => {
   });
 
   const onSubmit = (values: TestEditorModel) => {
-    props.onSubmit({
-      title: values.title,
-      description: values.description,
-    });
+    console.log("values", values);
   };
 
   return (
@@ -72,6 +77,11 @@ export const TestEditor = (props: TestEditorProps) => {
             </FormItem>
           )}
         />
+
+        <div className="flex justify-between items-center">
+          <Title size="h2">Questions</Title>
+          <NewQuestionDialog />
+        </div>
 
         <Button type="submit">Create</Button>
       </form>
