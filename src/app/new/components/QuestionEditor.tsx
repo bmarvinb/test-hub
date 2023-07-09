@@ -51,7 +51,7 @@ const TextInputQuestion = z.object({
   answer: z.union([z.string(), z.array(z.string())]),
 });
 
-const TestQuestion = z.union([
+export const TestQuestion = z.union([
   SingleChoiceQuestion,
   MultipleChoiceQuestion,
   NumberInputQuestion,

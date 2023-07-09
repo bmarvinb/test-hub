@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
+import { Textarea } from "@/components/ui/Textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -46,7 +47,6 @@ export const SingleChoiceQuestionForm = () => {
   });
 
   const onSubmit = (values: SingleChoiceQuestionModel) => {
-    
     console.log("submitted", values);
   };
 
@@ -60,7 +60,7 @@ export const SingleChoiceQuestionForm = () => {
             <FormItem>
               <FormLabel>Question</FormLabel>
               <FormControl>
-                <Input placeholder="Type your question" {...field} />
+                <Textarea placeholder="Type your question" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -68,7 +68,7 @@ export const SingleChoiceQuestionForm = () => {
         />
 
         <div className="flex justify-between items-center">
-          <Label>Options</Label>
+          <Label>Answers</Label>
           <Button
             variant="outline"
             onClick={() =>
@@ -114,23 +114,7 @@ export const SingleChoiceQuestionForm = () => {
           );
         })}
 
-        <FormField
-          control={form.control}
-          name="answer"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Answer</FormLabel>
-              <FormControl>
-                <Input placeholder="Correct answer" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button type="submit" className="w-full">
-          Create
-        </Button>
+        <Button type="submit">Add question</Button>
       </form>
     </Form>
   );

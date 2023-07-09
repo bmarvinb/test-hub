@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/Textarea";
 import { Title } from "@/components/ui/Title";
 import { NewQuestionDialog } from "./NewQuestionDialog";
+import { TestQuestion } from "./QuestionEditor";
 
 export interface TestEditorProps {
   onSubmit: (data: TestEditorModel) => void;
@@ -32,6 +33,7 @@ const formSchema = z.object({
   title: z.string(),
   description: z.string(),
   tags: z.array(TestTag),
+  questions: z.array(TestQuestion),
 });
 
 export const TestEditor = (_props: TestEditorProps) => {
@@ -40,12 +42,15 @@ export const TestEditor = (_props: TestEditorProps) => {
     defaultValues: {
       title: "",
       description: "",
+      questions: [],
     },
   });
 
   const onSubmit = (values: TestEditorModel) => {
     console.log("values", values);
   };
+
+  const questions = form.watch("questions");
 
   return (
     <Form {...form}>
@@ -81,6 +86,12 @@ export const TestEditor = (_props: TestEditorProps) => {
         <div className="flex justify-between items-center">
           <Title size="h2">Questions</Title>
           <NewQuestionDialog />
+        </div>
+
+        <div>
+          {questions.length === 0 && (
+            <div className="text-gray-500">No questions</div>
+          )}
         </div>
 
         <Button type="submit">Create</Button>
