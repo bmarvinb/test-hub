@@ -1,10 +1,11 @@
 "use client";
 
-import { SingleChoiceQuestionForm } from "@/app/new/components/SingleChoiceQuestionForm";
 import {
-  Form,
+  SingleChoiceQuestion,
+  SingleChoiceQuestionForm,
+} from "@/app/new/components/SingleChoiceQuestionForm";
+import {
   FormControl,
-  FormField,
   FormItem,
   FormLabel,
   FormMessage,
@@ -16,8 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
 import * as z from "zod";
 import { QuestionType } from "../types";
 
@@ -30,13 +30,6 @@ export type TestQuestionModel = z.infer<typeof TestQuestion>;
 export interface NewQuestionDialogProps {
   onSubmit: (data: TestQuestionModel) => void;
 }
-
-const SingleChoiceQuestion = z.object({
-  id: z.string(),
-  type: z.literal(QuestionType.SingleChoice),
-  options: z.array(z.string()),
-  answer: z.string(),
-});
 
 const MultipleChoiceQuestion = z.object({
   id: z.string(),
@@ -65,13 +58,10 @@ const TestQuestion = z.union([
   TextInputQuestion,
 ]);
 
-const questionEditorSchema = z.object({
-  type: z.string(),
-});
-
-type questionEditorModel = z.infer<typeof questionEditorSchema>;
-
-const FormContent = (props: { type: QuestionType }) => {
+const FormContent = (props: {
+  type: QuestionType;
+  onSubmit: (data: TestQuestionModel) => void;
+}) => {
   switch (props.type) {
     case QuestionType.SingleChoice:
       return <SingleChoiceQuestionForm />;
@@ -86,62 +76,42 @@ const FormContent = (props: { type: QuestionType }) => {
   }
 };
 
-export const QuestionEditor = (_props: QuestionEditorProps) => {
-  const form = useForm<questionEditorModel>({
-    resolver: zodResolver(questionEditorSchema),
-    defaultValues: {
-      type: QuestionType.SingleChoice,
-    },
-  });
-  const questionType = form.watch("type") as QuestionType;
-
-  const onSubmit = (values: questionEditorModel) => {
-    console.log("question eidtor values", values);
-  };
+export const QuestionEditor = (props: QuestionEditorProps) => {
+  const [questionType, setQuestionType] = useState<QuestionType>(
+    QuestionType.SingleChoice
+  );
 
   return (
     <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Question type</FormLabel>
-                <FormControl>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select question type" />
-                    </SelectTrigger>
+      <FormItem>
+        <FormLabel>Question type</FormLabel>
+        <FormControl>
+          <Select
+            onValueChange={(value) => setQuestionType(value as QuestionType)}
+            defaultValue={questionType}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select question type" />
+            </SelectTrigger>
 
-                    <SelectContent>
-                      <SelectItem value={QuestionType.SingleChoice}>
-                        Single choise
-                      </SelectItem>
-                      <SelectItem value={QuestionType.MultipleChoice}>
-                        Multiple choise
-                      </SelectItem>
-                      <SelectItem value={QuestionType.NumberInput}>
-                        Number input
-                      </SelectItem>
-                      <SelectItem value={QuestionType.TextInput}>
-                        Text input
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </form>
-      </Form>
+            <SelectContent>
+              <SelectItem value={QuestionType.SingleChoice}>
+                Single choise
+              </SelectItem>
+              <SelectItem value={QuestionType.MultipleChoice}>
+                Multiple choise
+              </SelectItem>
+              <SelectItem value={QuestionType.NumberInput}>
+                Number input
+              </SelectItem>
+              <SelectItem value={QuestionType.TextInput}>Text input</SelectItem>
+            </SelectContent>
+          </Select>
+        </FormControl>
+        <FormMessage />
+      </FormItem>
 
-      <FormContent type={questionType} />
+      <FormContent type={questionType} onSubmit={props.onSubmit} />
     </>
   );
 };

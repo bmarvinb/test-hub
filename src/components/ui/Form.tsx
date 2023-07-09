@@ -52,6 +52,19 @@ const useFormField = () => {
 
   const { id } = itemContext;
 
+  // TODO: understand do we need it, or not
+  // const error = fieldState.error
+  //   ? fieldState.error.message
+  //     ? fieldState.error?.message
+  //     : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //     // @ts-ignore
+  //     fieldState.error?.value
+  //     ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //       // @ts-ignore
+  //       fieldState.error?.value?.message
+  //     : null
+  //   : null;
+
   return {
     id,
     name: fieldContext.name,
@@ -146,7 +159,7 @@ const FormMessage = React.forwardRef<
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
   const { error, formMessageId } = useFormField();
-  const body = error ? String(error?.message) : children;
+  const body = error ? error : children;
 
   if (!body) {
     return null;

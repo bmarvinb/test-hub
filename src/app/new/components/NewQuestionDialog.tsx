@@ -18,7 +18,7 @@ export const NewQuestionDialog = () => {
         <Button variant="outline">Add question</Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Add question</DialogTitle>
           <DialogDescription>
