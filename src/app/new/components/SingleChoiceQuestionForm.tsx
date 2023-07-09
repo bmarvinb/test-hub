@@ -130,12 +130,11 @@ export const SingleChoiceQuestionForm = (
                         <div className="flex items-center gap-3">
                           {fieldData.isAnswer ? (
                             <Tooltip>
-                              <TooltipTrigger type="button">
-                                <CheckCircle2
-                                  type="button"
-                                  onClick={() => unmarkAsAnswer(fieldData.id)}
-                                  className="text-green-500 cursor-pointer"
-                                />
+                              <TooltipTrigger
+                                type="button"
+                                onClick={() => unmarkAsAnswer(fieldData.id)}
+                              >
+                                <CheckCircle2 className="text-green-500 cursor-pointer" />
                               </TooltipTrigger>
                               <TooltipContent>
                                 <p>Unmark as answer</p>
@@ -143,12 +142,11 @@ export const SingleChoiceQuestionForm = (
                             </Tooltip>
                           ) : (
                             <Tooltip>
-                              <TooltipTrigger type="button">
-                                <Circle
-                                  type="button"
-                                  onClick={() => markAsAnswer(fieldData.id)}
-                                  className="text-gray-500 cursor-pointer"
-                                />
+                              <TooltipTrigger
+                                type="button"
+                                onClick={() => markAsAnswer(fieldData.id)}
+                              >
+                                <Circle className="text-gray-500 cursor-pointer" />
                               </TooltipTrigger>
                               <TooltipContent>
                                 <p>Mark as answer</p>
@@ -168,12 +166,11 @@ export const SingleChoiceQuestionForm = (
                           />
 
                           <Tooltip>
-                            <TooltipTrigger type="button">
-                              <XCircle
-                                type="button"
-                                onClick={() => remove(index)}
-                                className="text-red-400"
-                              />
+                            <TooltipTrigger
+                              type="button"
+                              onClick={() => remove(index)}
+                            >
+                              <XCircle className="text-red-400" />
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>Remove option</p>
