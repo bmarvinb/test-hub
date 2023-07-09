@@ -101,7 +101,10 @@ export const TestEditor = () => {
           >
             Add question
           </Button>
-          <QuestionDialog isOpen={isDialogOpen}>
+          <QuestionDialog
+            isOpen={isDialogOpen}
+            toggleIsOpen={(open) => setIsDialogOpen(open)}
+          >
             <QuestionEditor onSubmit={onQuestionFormSubmit} />
           </QuestionDialog>
         </div>
