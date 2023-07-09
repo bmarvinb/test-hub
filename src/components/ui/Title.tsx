@@ -4,12 +4,12 @@ import { VariantProps, cva } from "class-variance-authority";
 const titleVariants = cva("font-bold text-gray-800", {
   variants: {
     size: {
-      h1: "text-2xl mb-8",
-      h2: "text-xl mb-6",
-      h3: "text-lg mb-4",
-      h4: "text-base mb-4",
-      h5: "text-sm mb-2",
-      h6: "text-xs mb-2",
+      h1: "text-2xl",
+      h2: "text-xl",
+      h3: "text-lg",
+      h4: "text-base",
+      h5: "text-sm",
+      h6: "text-xs",
     },
   },
   defaultVariants: {
@@ -24,9 +24,14 @@ export interface TitleProps
 export const Title = (props: TitleProps) => {
   const size = props.size || "h1";
 
+  const className = cn(
+    titleVariants({ className: props.className }),
+    titleVariants({ size })
+  );
+
   const attrs = {
-    className: cn(titleVariants({ className: props.className })),
     ...props,
+    className,
   };
 
   switch (size) {

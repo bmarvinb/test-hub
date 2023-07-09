@@ -48,7 +48,9 @@ export default function ContactPage() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-6">
-      <Title size={"h1"}>Contact us</Title>
+      <Title size={"h1"} className="mb-8">
+        Contact us
+      </Title>
 
       <ContactForm
         onSubmit={onSubmit}

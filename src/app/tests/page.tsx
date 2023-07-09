@@ -6,7 +6,7 @@ import Link from "next/link";
 export default function Tests() {
   return (
     <div className="max-w-4xl mx-auto py-8 px-6">
-      <Title>Tests page</Title>
+      <Title className="mb-8">Tests page</Title>
 
       <div className="flex mb-8">
         <Button asChild>
