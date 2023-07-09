@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { Title } from "@/components/ui/Title";
 import { TestsTable } from "./components/TestsTable";
+import Link from "next/link";
 
 export default function Tests() {
   return (
@@ -8,7 +9,9 @@ export default function Tests() {
       <Title>Tests page</Title>
 
       <div className="flex mb-8">
-        <Button>Create new test</Button>
+        <Button asChild>
+          <Link href="/new">New test</Link>
+        </Button>
       </div>
 
       <TestsTable />
