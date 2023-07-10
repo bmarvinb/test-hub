@@ -17,7 +17,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/Tooltip";
-import { FormMode } from "@/lib/form";
+import { Mode } from "@/lib/form";
 import { useToast } from "@/lib/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle2, Circle, XCircle } from "lucide-react";
@@ -40,38 +40,51 @@ export const ChoiceBasedQuestionSchema = z.object({
   ),
 });
 
-type CreateFormData = {
-  mode: FormMode.Create;
+type CommonFormData = {
   singleChoice: boolean;
 };
 
-type EditFormData = {
-  mode: FormMode.Edit;
+type CreateFormData = CommonFormData & {
+  mode: Mode.Create;
+};
+
+type EditFormData = CommonFormData & {
+  mode: Mode.Edit;
   question: ChoiceBasedQuestion;
-  singleChoice: boolean;
 };
 
-export type ChoiceBasedQuestionFormData = CreateFormData | EditFormData;
+export type FormData = CreateFormData | EditFormData;
+
+function isEditMode(context: FormData): context is EditFormData {
+  return context.mode === Mode.Edit;
+}
 
 export interface ChoiceBasedQuestionFormProps {
-  data: ChoiceBasedQuestionFormData;
+  data: FormData;
   onSubmit: (data: ChoiceBasedQuestion) => void;
 }
 
 const EMPTY_OPTION: QuestionChoiceOption = { value: "", isAnswer: false };
 
-export const ChoiceBasedQuestionForm = (
-  props: ChoiceBasedQuestionFormProps
-) => {
+export const ChoiceBasedQuestionForm = ({
+  data,
+  onSubmit,
+}: ChoiceBasedQuestionFormProps) => {
   const toast = useToast();
-  const data = props.data.mode === FormMode.Edit ? props.data.question : null;
-  const { singleChoice } = props.data;
+  const { singleChoice } = data;
+  const defaultValues = isEditMode(data)
+    ? {
+        question: data.question.question,
+        options: data.question.options,
+      }
+    : {
+        question: "",
+        options: [EMPTY_OPTION],
+      };
+
   const form = useForm<z.infer<typeof ChoiceBasedQuestionSchema>>({
     resolver: zodResolver(ChoiceBasedQuestionSchema),
-    defaultValues: {
-      question: data?.question ?? "",
-      options: data?.options ?? [EMPTY_OPTION],
-    },
+    defaultValues,
   });
 
   const { fields, append, remove, update } = useFieldArray({
@@ -84,7 +97,7 @@ export const ChoiceBasedQuestionForm = (
     form.reset();
   }, [form, append, singleChoice]);
 
-  const onSubmit = (values: z.infer<typeof ChoiceBasedQuestionSchema>) => {
+  const handleSubmit = (values: z.infer<typeof ChoiceBasedQuestionSchema>) => {
     if (!fields.some((field) => field.isAnswer)) {
       return toast.toast({
         variant: "destructive",
@@ -92,7 +105,7 @@ export const ChoiceBasedQuestionForm = (
         description: "Please mark at least one option as an answer",
       });
     }
-    props.onSubmit({
+    onSubmit({
       type: singleChoice
         ? QuestionType.SingleChoice
         : QuestionType.MultipleChoice,
@@ -128,7 +141,7 @@ export const ChoiceBasedQuestionForm = (
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="question"
@@ -252,7 +265,7 @@ export const ChoiceBasedQuestionForm = (
           type="submit"
           data-testid="choice-based-submit-button"
         >
-          {props.data.mode === FormMode.Create ? "Create" : "Update"}
+          {isEditMode(data) ? "Update" : "Create"}
         </Button>
       </form>
     </Form>

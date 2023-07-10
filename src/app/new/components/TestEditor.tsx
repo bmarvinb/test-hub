@@ -4,42 +4,53 @@ import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Label";
 import { useToast } from "@/lib/hooks/use-toast";
 import { useState } from "react";
-import { TestQuestionModel } from "../types";
-import { DialogContext, DialogMode, QuestionDialog } from "./QuestionDialog";
+import { TestEditorModel, TestQuestionModel } from "../types";
+import { QuestionDialogContext, QuestionDialog } from "./QuestionDialog";
 import { QuestionsList } from "./QuestionsList";
 import { TEST_FORM_ID, TestForm, TestFormModel } from "./TestForm";
+import { Mode } from "@/lib/form";
 
-type TestQuestions = {
-  questions: TestQuestionModel[];
+type TestEditorCreateMode = {
+  mode: Mode.Create;
 };
 
-export type TestEditorModel = TestFormModel & TestQuestions;
+type TestEditorEditMode = {
+  mode: Mode.Edit;
+  test: TestEditorModel;
+};
 
-export interface TestEditorProps {
-  data?: TestEditorModel;
-  onSubmit: (data: TestEditorModel) => void;
+export type TestEditorMode = TestEditorCreateMode | TestEditorEditMode;
+
+function isEditMode(context: TestEditorMode): context is TestEditorEditMode {
+  return context.mode === Mode.Edit;
 }
 
-export const TestEditor = (props: TestEditorProps) => {
+export interface TestEditorProps {
+  mode?: TestEditorMode;
+  onSubmit: (test: TestEditorModel) => void;
+}
+
+export const TestEditor = ({
+  mode = { mode: Mode.Create },
+  onSubmit,
+}: TestEditorProps) => {
   const toast = useToast();
   const [questions, setQuestions] = useState<TestQuestionModel[]>(
-    props.data?.questions ?? []
+    isEditMode(mode) ? mode.test.questions : []
   );
-  const [dialogContext, setDialogContext] = useState<DialogContext | null>(
-    null
-  );
+  const [questionDialogContext, setQuestionDialogContext] =
+    useState<QuestionDialogContext | null>();
 
   const handleTestEditorFormSubmit = (data: TestFormModel) => {
-    if (questions.length === 0) {
+    if (!questions.length) {
       return toast.toast({
         variant: "destructive",
         title: "Invalid form",
         description: "Please add at least one question to the test",
       });
     }
-    props.onSubmit({ ...data, questions });
+    onSubmit({ ...data, questions });
     toast.toast({
-      variant: "default",
       title: "Test created",
       description: "You can start sharing your test now",
     });
@@ -47,7 +58,7 @@ export const TestEditor = (props: TestEditorProps) => {
 
   const handleQuestionFormSubmit = (question: TestQuestionModel) => {
     setQuestions((prev) => [...prev, question]);
-    setDialogContext(null);
+    setQuestionDialogContext(null);
     toast.toast({
       title: "Question added",
       description: "Your question has been added to the test",
@@ -55,9 +66,8 @@ export const TestEditor = (props: TestEditorProps) => {
   };
 
   const handleQuestionEdit = (question: TestQuestionModel) => {
-    setDialogContext({
-      isOpen: true,
-      mode: DialogMode.Edit,
+    setQuestionDialogContext({
+      mode: Mode.Edit,
       question,
     });
   };
@@ -73,7 +83,14 @@ export const TestEditor = (props: TestEditorProps) => {
   return (
     <>
       <div className="mb-6">
-        <TestForm data={props.data} onSubmit={handleTestEditorFormSubmit} />
+        <TestForm
+          data={
+            isEditMode(mode)
+              ? { mode: Mode.Edit, test: mode.test }
+              : { mode: Mode.Create }
+          }
+          onSubmit={handleTestEditorFormSubmit}
+        />
       </div>
 
       <div className="flex justify-between items-center mb-4">
@@ -82,20 +99,15 @@ export const TestEditor = (props: TestEditorProps) => {
           type="button"
           variant="outline"
           size="sm"
-          onClick={() =>
-            setDialogContext({
-              isOpen: true,
-              mode: DialogMode.Create,
-            })
-          }
+          onClick={() => setQuestionDialogContext({ mode: Mode.Create })}
         >
           Add question
         </Button>
 
-        {dialogContext && (
+        {questionDialogContext && (
           <QuestionDialog
-            context={dialogContext}
-            onClose={() => setDialogContext(null)}
+            context={questionDialogContext}
+            onClose={() => setQuestionDialogContext(null)}
             onQuestionFormSubmit={handleQuestionFormSubmit}
           ></QuestionDialog>
         )}
@@ -110,7 +122,7 @@ export const TestEditor = (props: TestEditorProps) => {
       </div>
 
       <Button type="submit" form={TEST_FORM_ID}>
-        {props.data?.title ? "Update" : "Create"}
+        {isEditMode(mode) ? "Update" : "Create"}
       </Button>
     </>
   );

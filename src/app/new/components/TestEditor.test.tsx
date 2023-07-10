@@ -1,6 +1,7 @@
 import { render } from "@/test/utils";
 import { act, fireEvent, screen } from "@testing-library/react";
 import { TestEditor } from "./TestEditor";
+import { Mode } from "@/lib/form";
 
 describe("TestEditor", () => {
   it("should display error messages if form is empty", async () => {

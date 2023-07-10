@@ -7,54 +7,55 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
-import { QuestionTypePicker } from "./QuestionTypePicker";
-import { CreateQuestionForm, EditQuestionForm } from "./QuestionForm";
-import { QuestionType, TestQuestionModel } from "../types";
+import { Mode } from "@/lib/form";
 import { useState } from "react";
+import { QuestionType, TestQuestionModel } from "../types";
+import { CreateQuestionForm, EditQuestionForm } from "./QuestionForm";
+import { QuestionTypePicker } from "./QuestionTypePicker";
 
-export enum DialogMode {
-  Create = "create",
-  Edit = "edit",
-}
-
-type DialogCommonContext = {
-  isOpen: boolean;
+type QuestionDialogCreateContext = {
+  mode: Mode.Create;
 };
 
-type DialogCreateContext = DialogCommonContext & {
-  mode: DialogMode.Create;
-};
-
-type DialogEditContext = DialogCommonContext & {
-  mode: DialogMode.Edit;
+type QuestionDialogEditContext = {
+  mode: Mode.Edit;
   question: TestQuestionModel;
 };
 
-export type DialogContext = DialogCreateContext | DialogEditContext;
+export type QuestionDialogContext =
+  | QuestionDialogCreateContext
+  | QuestionDialogEditContext;
+
+function isEditMode(
+  context: QuestionDialogContext
+): context is QuestionDialogEditContext {
+  return context.mode === Mode.Edit;
+}
 
 export interface QuestionDialogProps {
-  context: DialogContext;
+  context: QuestionDialogContext;
   onClose: () => void;
   onQuestionFormSubmit: (question: TestQuestionModel) => void;
 }
 
-export const QuestionDialog = (props: QuestionDialogProps) => {
+export const QuestionDialog = ({
+  context,
+  onClose,
+  onQuestionFormSubmit,
+}: QuestionDialogProps) => {
+  const editMode = isEditMode(context);
   const [questionType, setQuestionType] = useState<QuestionType>(
-    props.context.mode === DialogMode.Create
-      ? QuestionType.SingleChoice
-      : props.context.question.type
+    editMode ? context.question.type : QuestionType.SingleChoice
   );
 
-  const title =
-    props.context.mode === "create" ? "Add question" : "Edit question";
+  const title = editMode ? "Edit question" : "Add question";
 
-  const description =
-    props.context.mode === "create"
-      ? "Add a new question to the test"
-      : "Edit the question";
+  const description = editMode
+    ? "Edit the question"
+    : "Add a new question to the test";
 
   return (
-    <Dialog defaultOpen={true} onOpenChange={props.onClose}>
+    <Dialog defaultOpen={true} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -64,18 +65,18 @@ export const QuestionDialog = (props: QuestionDialogProps) => {
         <div className="grid gap-4">
           <QuestionTypePicker
             value={questionType}
-            disabled={props.context.mode === DialogMode.Edit}
+            disabled={editMode}
             onChange={setQuestionType}
           />
-          {props.context.mode === DialogMode.Edit ? (
+          {editMode ? (
             <EditQuestionForm
-              question={props.context.question}
-              onSubmit={props.onQuestionFormSubmit}
+              question={context.question}
+              onSubmit={onQuestionFormSubmit}
             />
           ) : (
             <CreateQuestionForm
               type={questionType}
-              onSubmit={props.onQuestionFormSubmit}
+              onSubmit={onQuestionFormSubmit}
             />
           )}
         </div>

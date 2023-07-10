@@ -1,8 +1,8 @@
 "use client";
 
 import { Title } from "@/components/ui/Title";
-import { TestEditor, TestEditorModel } from "./components/TestEditor";
-import { QuestionType } from "./types";
+import { TestEditor } from "./components/TestEditor";
+import { QuestionType, TestEditorModel } from "./types";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const newTest: TestEditorModel = {

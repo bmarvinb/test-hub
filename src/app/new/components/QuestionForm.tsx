@@ -1,6 +1,6 @@
 "use client";
 
-import { FormMode } from "@/lib/form";
+import { Mode } from "@/lib/form";
 import { QuestionType, TestQuestionModel } from "../types";
 import { ChoiceBasedQuestionForm } from "./ChoiceBasedQuestionForm";
 
@@ -22,14 +22,14 @@ export const CreateQuestionForm = ({
     case QuestionType.SingleChoice:
       return (
         <ChoiceBasedQuestionForm
-          data={{ mode: FormMode.Create, singleChoice: true }}
+          data={{ mode: Mode.Create, singleChoice: true }}
           onSubmit={onSubmit}
         />
       );
     case QuestionType.MultipleChoice:
       return (
         <ChoiceBasedQuestionForm
-          data={{ mode: FormMode.Create, singleChoice: false }}
+          data={{ mode: Mode.Create, singleChoice: false }}
           onSubmit={onSubmit}
         />
       );
@@ -55,7 +55,7 @@ export const EditQuestionForm = ({
     case QuestionType.SingleChoice:
       return (
         <ChoiceBasedQuestionForm
-          data={{ mode: FormMode.Edit, question, singleChoice: true }}
+          data={{ mode: Mode.Edit, question, singleChoice: true }}
           onSubmit={onSubmit}
         />
       );
@@ -63,7 +63,7 @@ export const EditQuestionForm = ({
       return (
         <ChoiceBasedQuestionForm
           data={{
-            mode: FormMode.Edit,
+            mode: Mode.Edit,
             question,
             singleChoice: false,
           }}

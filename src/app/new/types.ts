@@ -33,3 +33,9 @@ export type TestQuestionModel =
   | ChoiceBasedQuestion
   | NumberInputQuestion
   | TextInputQuestion;
+
+export type TestEditorModel = {
+  title: string;
+  description: string;
+  questions: TestQuestionModel[];
+};

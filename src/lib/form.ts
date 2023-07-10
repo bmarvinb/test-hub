@@ -1,4 +1,4 @@
-export enum FormMode {
+export enum Mode {
   Create = "create",
   Edit = "edit",
 }
