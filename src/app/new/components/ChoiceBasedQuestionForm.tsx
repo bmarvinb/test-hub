@@ -215,6 +215,7 @@ export const ChoiceBasedQuestionForm = ({
                               type="button"
                               data-testid={`options.${index}.mark-as-answer`}
                               onClick={() => {
+                                // TODO: when I use keyboard focus is lost after clicking on the button
                                 markAsAnswer(data.id);
                               }}
                             >
