@@ -70,14 +70,6 @@ export const ChoiceBasedQuestionForm = (
     name: "options",
   });
 
-  const markAsAnswer = (index: number) => {
-    // TODO: implement
-  };
-
-  const unmarkAsAnswer = (index: number) => {
-    // TODO: implement
-  };
-
   const onSubmit = (values: z.infer<typeof ChoiceBasedQuestionSchema>) => {
     props.onSubmit({
       type: props.data.singleChoice
@@ -124,7 +116,7 @@ export const ChoiceBasedQuestionForm = (
         {fields.length === 0 ? (
           <div className="text-gray-500 text-sm">No added options</div>
         ) : (
-          fields.map(({ id, isAnswer }, index) => {
+          fields.map(({ id }, index) => {
             return (
               <FormField
                 key={id}
@@ -136,11 +128,16 @@ export const ChoiceBasedQuestionForm = (
                     <FormItem>
                       <FormControl>
                         <div className="flex items-center gap-3">
-                          {isAnswer ? (
+                          {field.value.isAnswer ? (
                             <Tooltip>
                               <TooltipTrigger
                                 type="button"
-                                onClick={() => unmarkAsAnswer(index)}
+                                onClick={() =>
+                                  field.onChange({
+                                    value: field.value.value,
+                                    isAnswer: false,
+                                  })
+                                }
                               >
                                 <CheckCircle2 className="text-green-500" />
                               </TooltipTrigger>
@@ -152,7 +149,12 @@ export const ChoiceBasedQuestionForm = (
                             <Tooltip>
                               <TooltipTrigger
                                 type="button"
-                                onClick={() => markAsAnswer(index)}
+                                onClick={() => {
+                                  field.onChange({
+                                    value: field.value.value,
+                                    isAnswer: true, // TODO: wrong implementation
+                                  });
+                                }}
                               >
                                 <Circle className="text-gray-500" />
                               </TooltipTrigger>
@@ -168,7 +170,7 @@ export const ChoiceBasedQuestionForm = (
                             onChange={(e) => {
                               field.onChange({
                                 value: e.target.value,
-                                isAnswer: false,
+                                isAnswer: field.value.isAnswer,
                               });
                             }}
                           />
