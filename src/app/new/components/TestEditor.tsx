@@ -2,13 +2,14 @@
 
 import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Label";
+import { useToast } from "@/lib/hooks/use-toast";
 import { useState } from "react";
 import { QuestionType } from "../types";
-import { QuestionDialog } from "./QuestionDialog";
+import { DialogContext, QuestionDialog } from "./QuestionDialog";
 import { QuestionForm, TestQuestionModel } from "./QuestionForm";
 import { QuestionTypePicker } from "./QuestionTypePicker";
 import { QuestionsList } from "./QuestionsList";
-import { TestFormModel, TEST_FORM_ID, TestForm } from "./TestForm";
+import { TEST_FORM_ID, TestForm, TestFormModel } from "./TestForm";
 
 type TestQuestions = {
   questions: TestQuestionModel[];
@@ -22,6 +23,7 @@ export interface TestEditorProps {
 }
 
 export const TestEditor = (props: TestEditorProps) => {
+  const toast = useToast();
   const { title, description } = props.data;
   const [questions, setQuestions] = useState<TestQuestionModel[]>(
     props.data.questions
@@ -29,15 +31,21 @@ export const TestEditor = (props: TestEditorProps) => {
   const [questionType, setQuestionType] = useState<QuestionType>(
     QuestionType.SingleChoice
   );
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogContext, setDialogContext] = useState<DialogContext | null>(
+    null
+  );
 
   const onTestEditorFormSubmit = (data: TestFormModel) => {
     props.onSubmit({ ...data, questions });
   };
 
   const onQuestionFormSubmit = (question: TestQuestionModel) => {
-    setIsDialogOpen(false);
     setQuestions((prev) => [...prev, question]);
+    setDialogContext(null);
+    toast.toast({
+      title: "Question added",
+      description: "Your question has been added to the test",
+    });
   };
 
   return (
@@ -56,15 +64,28 @@ export const TestEditor = (props: TestEditorProps) => {
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => setIsDialogOpen(true)}
+          onClick={() =>
+            setDialogContext({
+              isOpen: true,
+              mode: "create",
+            })
+          }
         >
           Add question
         </Button>
 
-        <QuestionDialog isOpen={isDialogOpen} toggleIsOpen={setIsDialogOpen}>
-          <QuestionTypePicker value={questionType} onChange={setQuestionType} />
-          <QuestionForm type={questionType} onSubmit={onQuestionFormSubmit} />
-        </QuestionDialog>
+        {dialogContext && (
+          <QuestionDialog
+            context={dialogContext}
+            onClose={() => setDialogContext(null)}
+          >
+            <QuestionTypePicker
+              value={questionType}
+              onChange={setQuestionType}
+            />
+            <QuestionForm type={questionType} onSubmit={onQuestionFormSubmit} />
+          </QuestionDialog>
+        )}
       </div>
 
       <div className="mb-8">
