@@ -8,12 +8,8 @@ import {
   DialogTitle,
 } from "@/components/ui/Dialog";
 import { QuestionTypePicker } from "./QuestionTypePicker";
-import {
-  CreateQuestionForm,
-  EditQuestionForm,
-  TestQuestionModel,
-} from "./QuestionForm";
-import { QuestionType } from "../types";
+import { CreateQuestionForm, EditQuestionForm } from "./QuestionForm";
+import { QuestionType, TestQuestionModel } from "../types";
 import { useState } from "react";
 
 export enum DialogMode {
@@ -66,7 +62,11 @@ export const QuestionDialog = (props: QuestionDialogProps) => {
         </DialogHeader>
 
         <div className="grid gap-4">
-          <QuestionTypePicker value={questionType} onChange={setQuestionType} />
+          <QuestionTypePicker
+            value={questionType}
+            disabled={props.context.mode === DialogMode.Edit}
+            onChange={setQuestionType}
+          />
           {props.context.mode === DialogMode.Edit ? (
             <EditQuestionForm
               question={props.context.question}

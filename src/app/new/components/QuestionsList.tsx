@@ -3,8 +3,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/Tooltip";
-import { QuestionType } from "../types";
-import { TestQuestionModel } from "./QuestionForm";
+import { QuestionType, TestQuestionModel } from "../types";
 import { Edit } from "lucide-react";
 import { cn } from "@/lib/utils";
 

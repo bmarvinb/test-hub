@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Label";
 import { useToast } from "@/lib/hooks/use-toast";
 import { useState } from "react";
+import { TestQuestionModel } from "../types";
 import { DialogContext, DialogMode, QuestionDialog } from "./QuestionDialog";
-import { TestQuestionModel } from "./QuestionForm";
 import { QuestionsList } from "./QuestionsList";
 import { TEST_FORM_ID, TestForm, TestFormModel } from "./TestForm";
 
