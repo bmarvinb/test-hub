@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/Button";
 import { Title } from "@/components/ui/Title";
-import { TestsTable } from "./components/TestsTable";
 import Link from "next/link";
 
 export default function Tests() {
@@ -13,8 +12,6 @@ export default function Tests() {
           <Link href="/new">New test</Link>
         </Button>
       </div>
-
-      <TestsTable />
     </div>
   );
 }
