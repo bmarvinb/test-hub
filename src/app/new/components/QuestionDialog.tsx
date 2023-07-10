@@ -58,7 +58,7 @@ export const QuestionDialog = (props: QuestionDialogProps) => {
       : "Edit the question";
 
   return (
-    <Dialog onOpenChange={props.onClose}>
+    <Dialog defaultOpen={true} onOpenChange={props.onClose}>
       <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
