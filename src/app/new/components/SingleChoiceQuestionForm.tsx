@@ -7,6 +7,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
@@ -26,10 +27,10 @@ export type SingleChoiceQuestionModel = z.infer<typeof SingleChoiceQuestion>;
 
 export const SingleChoiceQuestion = z.object({
   type: z.literal(QuestionType.SingleChoice),
-  question: z.string(),
+  question: z.string().min(1, "Question cannot be empty"),
   options: z.array(
     z.object({
-      value: z.string(),
+      value: z.string().min(1, "Option cannot be empty"),
       isAnswer: z.boolean(),
     })
   ),
@@ -38,7 +39,6 @@ export const SingleChoiceQuestion = z.object({
 export interface SingleChoiceQuestionFormProps {
   onSubmit: (data: SingleChoiceQuestionModel) => void;
 }
-
 export const SingleChoiceQuestionForm = (
   props: SingleChoiceQuestionFormProps
 ) => {
@@ -91,6 +91,7 @@ export const SingleChoiceQuestionForm = (
               <FormControl>
                 <Textarea placeholder="Type your question" {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -115,70 +116,69 @@ export const SingleChoiceQuestionForm = (
         {fields.length === 0 ? (
           <div className="text-gray-500 text-sm">No added options</div>
         ) : (
-          fields.map((fieldData, index) => {
+          fields.map(({ id, isAnswer }, index) => {
             return (
               <FormField
-                key={index}
+                key={id}
                 control={form.control}
                 name={`options.${index}`}
-                render={({ field }) => {
-                  return (
-                    <FormItem>
-                      <FormControl>
-                        <div className="flex items-center gap-3">
-                          {fieldData.isAnswer ? (
-                            <Tooltip>
-                              <TooltipTrigger
-                                type="button"
-                                onClick={() => unmarkAsAnswer(fieldData.id)}
-                              >
-                                <CheckCircle2 className="text-green-500 cursor-pointer" />
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Unmark as answer</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          ) : (
-                            <Tooltip>
-                              <TooltipTrigger
-                                type="button"
-                                onClick={() => markAsAnswer(fieldData.id)}
-                              >
-                                <Circle className="text-gray-500 cursor-pointer" />
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Mark as answer</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          )}
-
-                          <Input
-                            placeholder={`Question option`}
-                            value={field.value.value}
-                            onChange={(e) => {
-                              field.onChange({
-                                value: e.target.value,
-                                isAnswer: false,
-                              });
-                            }}
-                          />
-
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="flex items-center gap-3">
+                        {isAnswer ? (
                           <Tooltip>
                             <TooltipTrigger
                               type="button"
-                              onClick={() => remove(index)}
+                              onClick={() => unmarkAsAnswer(id)}
                             >
-                              <XCircle className="text-red-400" />
+                              <CheckCircle2 className="text-green-500 cursor-pointer" />
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>Remove option</p>
+                              <p>Unmark as answer</p>
                             </TooltipContent>
                           </Tooltip>
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  );
-                }}
+                        ) : (
+                          <Tooltip>
+                            <TooltipTrigger
+                              type="button"
+                              onClick={() => markAsAnswer(id)}
+                            >
+                              <Circle className="text-gray-500 cursor-pointer" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Mark as answer</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        )}
+
+                        <Input
+                          placeholder={`Question option`}
+                          value={field.value.value}
+                          onChange={(e) => {
+                            field.onChange({
+                              value: e.target.value,
+                              isAnswer: false,
+                            });
+                          }}
+                        />
+
+                        <Tooltip>
+                          <TooltipTrigger
+                            type="button"
+                            onClick={() => remove(index)}
+                          >
+                            <XCircle className="text-red-400" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Remove option</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             );
           })

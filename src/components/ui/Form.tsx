@@ -52,6 +52,14 @@ const useFormField = () => {
 
   const { id } = itemContext;
 
+  // In nested forms, FieldError is wrapper into object with value property
+  const error = fieldState.error
+    ? fieldState.error.message
+      ? fieldState.error
+      : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (fieldState.error as any).value
+    : undefined;
+
   return {
     id,
     name: fieldContext.name,
@@ -59,6 +67,7 @@ const useFormField = () => {
     formDescriptionId: `${id}-form-item-description`,
     formMessageId: `${id}-form-item-message`,
     ...fieldState,
+    error,
   };
 };
 
