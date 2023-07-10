@@ -19,9 +19,9 @@ const QuestionListItem = (props: QuestionListItemProps) => {
     case QuestionType.SingleChoice:
     case QuestionType.MultipleChoice:
       return (
-        <div className={cn("text-sm flex gap-2", props.className)}>
+        <div className={cn("flex items-center gap-3", props.className)}>
           <div>
-            <span className="text-gray-500">{order}. </span>
+            <span className="text-gray-600">{order}. </span>
             {question.question}
           </div>
           <Tooltip>
@@ -29,7 +29,7 @@ const QuestionListItem = (props: QuestionListItemProps) => {
               type="button"
               onClick={() => props.onEditQuestion(question)}
             >
-              <Edit size={16} className="text-gray-500" />
+              <Edit size={20} className="text-gray-600" />
             </TooltipTrigger>
             <TooltipContent>
               <p>Edit question</p>
@@ -53,8 +53,9 @@ export interface QuestionsListProps {
 
 export const QuestionsList = (props: QuestionsListProps) => {
   const { questions } = props;
+  // TODO: use table for question representations
   return questions.length === 0 ? (
-    <div className="text-gray-500 text-sm">No questions</div>
+    <div className="text-gray-600 text-sm">No questions</div>
   ) : (
     questions.map((question, index) => (
       <QuestionListItem

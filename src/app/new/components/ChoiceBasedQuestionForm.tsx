@@ -179,7 +179,10 @@ export const ChoiceBasedQuestionForm = (
                                 unmarkAsAnswer(index);
                               }}
                             >
-                              <CheckCircle2 className="text-green-500" />
+                              <CheckCircle2
+                                size={20}
+                                className="text-green-500"
+                              />
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>Unmark as answer</p>
@@ -193,7 +196,7 @@ export const ChoiceBasedQuestionForm = (
                                 markAsAnswer(data.id);
                               }}
                             >
-                              <Circle className="text-gray-500" />
+                              <Circle size={20} className="text-gray-600" />
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>Mark as answer</p>
@@ -217,7 +220,7 @@ export const ChoiceBasedQuestionForm = (
                             type="button"
                             onClick={() => removeOption(index)}
                           >
-                            <XCircle className="text-red-400" />
+                            <XCircle size={20} className="text-red-400" />
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>Remove option</p>
