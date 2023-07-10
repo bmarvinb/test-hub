@@ -22,6 +22,7 @@ import { CheckCircle2, Circle, XCircle } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
 import { QuestionType } from "../types";
+import { FormMode } from "@/lib/form";
 
 export type SingleChoiceQuestionModel = z.infer<typeof SingleChoiceQuestion>;
 
@@ -36,21 +37,34 @@ export const SingleChoiceQuestion = z.object({
   ),
 });
 
+type CreateFormData = {
+  mode: FormMode.Create;
+};
+
+type UpdateFormData = {
+  mode: FormMode.Edit;
+  question: SingleChoiceQuestionModel;
+};
+
+export type SingleChoiceQuestionFormData = CreateFormData | UpdateFormData;
+
 export interface SingleChoiceQuestionFormProps {
+  data: SingleChoiceQuestionFormData;
   onSubmit: (data: SingleChoiceQuestionModel) => void;
 }
+
 export const SingleChoiceQuestionForm = (
   props: SingleChoiceQuestionFormProps
 ) => {
+  console.log("props", props);
+
+  const data = props.data.mode === FormMode.Edit ? props.data.question : null;
   const form = useForm<SingleChoiceQuestionModel>({
     resolver: zodResolver(SingleChoiceQuestion),
     defaultValues: {
       type: QuestionType.SingleChoice,
-      question: "Sample question",
-      options: [
-        { value: "Option 1", isAnswer: false },
-        { value: "Option 2", isAnswer: true },
-      ],
+      question: data?.question ?? "",
+      options: data?.options ?? [],
     },
   });
 
@@ -132,7 +146,7 @@ export const SingleChoiceQuestionForm = (
                               type="button"
                               onClick={() => unmarkAsAnswer(id)}
                             >
-                              <CheckCircle2 className="text-green-500 cursor-pointer" />
+                              <CheckCircle2 className="text-green-500" />
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>Unmark as answer</p>
@@ -144,7 +158,7 @@ export const SingleChoiceQuestionForm = (
                               type="button"
                               onClick={() => markAsAnswer(id)}
                             >
-                              <Circle className="text-gray-500 cursor-pointer" />
+                              <Circle className="text-gray-500" />
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>Mark as answer</p>
@@ -185,7 +199,7 @@ export const SingleChoiceQuestionForm = (
         )}
 
         <Button variant="default" type="submit">
-          Create
+          {props.data.mode === FormMode.Create ? "Create" : "Update"}
         </Button>
       </form>
     </Form>

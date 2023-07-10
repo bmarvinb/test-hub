@@ -7,19 +7,48 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
+import { QuestionTypePicker } from "./QuestionTypePicker";
+import {
+  CreateQuestionForm,
+  EditQuestionForm,
+  TestQuestionModel,
+} from "./QuestionForm";
+import { QuestionType } from "../types";
+import { useState } from "react";
 
-export type DialogContext = {
+export enum DialogMode {
+  Create = "create",
+  Edit = "edit",
+}
+
+type DialogCommonContext = {
   isOpen: boolean;
-  mode: "create" | "edit";
 };
+
+type DialogCreateContext = DialogCommonContext & {
+  mode: DialogMode.Create;
+};
+
+type DialogEditContext = DialogCommonContext & {
+  mode: DialogMode.Edit;
+  question: TestQuestionModel;
+};
+
+export type DialogContext = DialogCreateContext | DialogEditContext;
 
 export interface QuestionDialogProps {
   context: DialogContext;
-  children: React.ReactNode;
   onClose: () => void;
+  onQuestionFormSubmit: (question: TestQuestionModel) => void;
 }
 
 export const QuestionDialog = (props: QuestionDialogProps) => {
+  const [questionType, setQuestionType] = useState<QuestionType>(
+    props.context.mode === DialogMode.Create
+      ? QuestionType.SingleChoice
+      : props.context.question.type
+  );
+
   const title =
     props.context.mode === "create" ? "Add question" : "Edit question";
 
@@ -29,14 +58,27 @@ export const QuestionDialog = (props: QuestionDialogProps) => {
       : "Edit the question";
 
   return (
-    <Dialog open={props.context.isOpen} onOpenChange={props.onClose}>
+    <Dialog onOpenChange={props.onClose}>
       <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-4">{props.children}</div>
+        <div className="grid gap-4">
+          <QuestionTypePicker value={questionType} onChange={setQuestionType} />
+          {props.context.mode === DialogMode.Edit ? (
+            <EditQuestionForm
+              question={props.context.question}
+              onSubmit={props.onQuestionFormSubmit}
+            />
+          ) : (
+            <CreateQuestionForm
+              type={questionType}
+              onSubmit={props.onQuestionFormSubmit}
+            />
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );

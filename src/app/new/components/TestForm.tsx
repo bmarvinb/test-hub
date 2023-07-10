@@ -17,8 +17,7 @@ import * as z from "zod";
 export type TestFormModel = z.infer<typeof testFormSchema>;
 
 export interface TestFormProps {
-  title: string;
-  description: string;
+  data: TestFormModel;
   onSubmit: (data: TestFormModel) => void;
 }
 
@@ -33,8 +32,8 @@ export const TestForm = (props: TestFormProps) => {
   const form = useForm<TestFormModel>({
     resolver: zodResolver(testFormSchema),
     defaultValues: {
-      title: props.title,
-      description: props.description,
+      title: props.data.title,
+      description: props.data.description,
     },
   });
 

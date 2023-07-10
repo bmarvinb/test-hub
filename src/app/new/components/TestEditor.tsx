@@ -4,10 +4,8 @@ import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Label";
 import { useToast } from "@/lib/hooks/use-toast";
 import { useState } from "react";
-import { QuestionType } from "../types";
-import { DialogContext, QuestionDialog } from "./QuestionDialog";
-import { QuestionForm, TestQuestionModel } from "./QuestionForm";
-import { QuestionTypePicker } from "./QuestionTypePicker";
+import { DialogContext, DialogMode, QuestionDialog } from "./QuestionDialog";
+import { TestQuestionModel } from "./QuestionForm";
 import { QuestionsList } from "./QuestionsList";
 import { TEST_FORM_ID, TestForm, TestFormModel } from "./TestForm";
 
@@ -24,22 +22,18 @@ export interface TestEditorProps {
 
 export const TestEditor = (props: TestEditorProps) => {
   const toast = useToast();
-  const { title, description } = props.data;
   const [questions, setQuestions] = useState<TestQuestionModel[]>(
     props.data.questions
-  );
-  const [questionType, setQuestionType] = useState<QuestionType>(
-    QuestionType.SingleChoice
   );
   const [dialogContext, setDialogContext] = useState<DialogContext | null>(
     null
   );
 
-  const onTestEditorFormSubmit = (data: TestFormModel) => {
+  const handleTestEditorFormSubmit = (data: TestFormModel) => {
     props.onSubmit({ ...data, questions });
   };
 
-  const onQuestionFormSubmit = (question: TestQuestionModel) => {
+  const handleQuestionFormSubmit = (question: TestQuestionModel) => {
     setQuestions((prev) => [...prev, question]);
     setDialogContext(null);
     toast.toast({
@@ -48,14 +42,18 @@ export const TestEditor = (props: TestEditorProps) => {
     });
   };
 
+  const handleQuestionEdit = (question: TestQuestionModel) => {
+    setDialogContext({
+      isOpen: true,
+      mode: DialogMode.Edit,
+      question,
+    });
+  };
+
   return (
     <>
       <div className="mb-6">
-        <TestForm
-          title={title}
-          description={description}
-          onSubmit={onTestEditorFormSubmit}
-        />
+        <TestForm data={props.data} onSubmit={handleTestEditorFormSubmit} />
       </div>
 
       <div className="flex justify-between items-center">
@@ -67,7 +65,7 @@ export const TestEditor = (props: TestEditorProps) => {
           onClick={() =>
             setDialogContext({
               isOpen: true,
-              mode: "create",
+              mode: DialogMode.Create,
             })
           }
         >
@@ -78,18 +76,16 @@ export const TestEditor = (props: TestEditorProps) => {
           <QuestionDialog
             context={dialogContext}
             onClose={() => setDialogContext(null)}
-          >
-            <QuestionTypePicker
-              value={questionType}
-              onChange={setQuestionType}
-            />
-            <QuestionForm type={questionType} onSubmit={onQuestionFormSubmit} />
-          </QuestionDialog>
+            onQuestionFormSubmit={handleQuestionFormSubmit}
+          ></QuestionDialog>
         )}
       </div>
 
       <div className="mb-8">
-        <QuestionsList questions={questions} />
+        <QuestionsList
+          questions={questions}
+          onEditQuestion={handleQuestionEdit}
+        />
       </div>
 
       <Button type="submit" form={TEST_FORM_ID}>
