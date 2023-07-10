@@ -4,11 +4,6 @@ import { Mode } from "@/lib/form";
 import { QuestionType, TestQuestionModel } from "../types";
 import { ChoiceBasedQuestionForm } from "./ChoiceBasedQuestionForm";
 
-export interface QuestionEditorProps {
-  questionType: QuestionType;
-  onSubmit: (data: TestQuestionModel) => void;
-}
-
 export interface CreateQuestionFormProps {
   type: QuestionType;
   onSubmit: (data: TestQuestionModel) => void;
