@@ -136,7 +136,11 @@ export const ChoiceBasedQuestionForm = (
             <FormItem>
               <FormLabel>Question</FormLabel>
               <FormControl>
-                <Textarea placeholder="Type your question" {...field} />
+                <Textarea
+                  placeholder="Type your question"
+                  {...field}
+                  data-testid="question"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -170,11 +174,15 @@ export const ChoiceBasedQuestionForm = (
                 return (
                   <FormItem>
                     <FormControl>
-                      <div className="flex items-center gap-3">
+                      <div
+                        className="flex items-center gap-3"
+                        data-testid={`options.${index}`}
+                      >
                         {field.value.isAnswer ? (
                           <Tooltip>
                             <TooltipTrigger
                               type="button"
+                              data-testid={`options.${index}.unmark-as-answer`}
                               onClick={() => {
                                 unmarkAsAnswer(index);
                               }}
@@ -192,6 +200,7 @@ export const ChoiceBasedQuestionForm = (
                           <Tooltip>
                             <TooltipTrigger
                               type="button"
+                              data-testid={`options.${index}.mark-as-answer`}
                               onClick={() => {
                                 markAsAnswer(data.id);
                               }}
@@ -207,6 +216,7 @@ export const ChoiceBasedQuestionForm = (
                         <Input
                           placeholder={`Question option`}
                           value={field.value.value}
+                          data-testid={`options.${index}.option`}
                           onChange={(e) => {
                             field.onChange({
                               value: e.target.value,
@@ -218,6 +228,7 @@ export const ChoiceBasedQuestionForm = (
                         <Tooltip>
                           <TooltipTrigger
                             type="button"
+                            data-testid={`options.${index}.remove-option`}
                             onClick={() => removeOption(index)}
                           >
                             <XCircle size={20} className="text-red-400" />
@@ -236,7 +247,11 @@ export const ChoiceBasedQuestionForm = (
           );
         })}
 
-        <Button variant="default" type="submit">
+        <Button
+          variant="default"
+          type="submit"
+          data-testid="choice-based-submit-button"
+        >
           {props.data.mode === FormMode.Create ? "Create" : "Update"}
         </Button>
       </form>

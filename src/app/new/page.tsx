@@ -29,17 +29,14 @@ const editTest: TestEditorModel = {
 };
 
 export default function NewTest() {
-  const data = editTest;
+  const data = newTest;
   return (
     <div className="max-w-4xl mx-auto py-8 px-6">
       <Title className="mb-8">
         {data.title ? "Update test" : "Create test"}
       </Title>
 
-      <TestEditor
-        data={data}
-        onSubmit={(data) => console.log("Data to send", data)}
-      />
+      <TestEditor onSubmit={(data) => console.log("Data to send", data)} />
     </div>
   );
 }

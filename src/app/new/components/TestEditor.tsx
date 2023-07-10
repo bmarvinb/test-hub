@@ -16,21 +16,33 @@ type TestQuestions = {
 export type TestEditorModel = TestFormModel & TestQuestions;
 
 export interface TestEditorProps {
-  data: TestEditorModel;
+  data?: TestEditorModel;
   onSubmit: (data: TestEditorModel) => void;
 }
 
 export const TestEditor = (props: TestEditorProps) => {
   const toast = useToast();
   const [questions, setQuestions] = useState<TestQuestionModel[]>(
-    props.data.questions
+    props.data?.questions ?? []
   );
   const [dialogContext, setDialogContext] = useState<DialogContext | null>(
     null
   );
 
   const handleTestEditorFormSubmit = (data: TestFormModel) => {
+    if (questions.length === 0) {
+      return toast.toast({
+        variant: "destructive",
+        title: "Invalid form",
+        description: "Please add at least one question to the test",
+      });
+    }
     props.onSubmit({ ...data, questions });
+    toast.toast({
+      variant: "default",
+      title: "Test created",
+      description: "You can start sharing your test now",
+    });
   };
 
   const handleQuestionFormSubmit = (question: TestQuestionModel) => {
@@ -98,7 +110,7 @@ export const TestEditor = (props: TestEditorProps) => {
       </div>
 
       <Button type="submit" form={TEST_FORM_ID}>
-        {props.data.title ? "Update" : "Create"}
+        {props.data?.title ? "Update" : "Create"}
       </Button>
     </>
   );

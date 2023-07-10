@@ -17,23 +17,23 @@ import * as z from "zod";
 export type TestFormModel = z.infer<typeof testFormSchema>;
 
 export interface TestFormProps {
-  data: TestFormModel;
+  data?: TestFormModel;
   onSubmit: (data: TestFormModel) => void;
 }
 
 export const TEST_FORM_ID = "test-editor-form";
 
 const testFormSchema = z.object({
-  title: z.string(),
-  description: z.string(),
+  title: z.string().min(1, "Title cannot be empty"),
+  description: z.string().min(1, "Description cannot be empty"),
 });
 
 export const TestForm = (props: TestFormProps) => {
   const form = useForm<TestFormModel>({
     resolver: zodResolver(testFormSchema),
     defaultValues: {
-      title: props.data.title,
-      description: props.data.description,
+      title: props.data?.title ?? "",
+      description: props.data?.description ?? "",
     },
   });
 
