@@ -1,70 +1,90 @@
+import { Button } from "@/components/ui/Button";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/Tooltip";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/Table";
 import { QuestionType, TestQuestionModel } from "../types";
-import { Edit } from "lucide-react";
-import { cn } from "@/lib/utils";
-
-interface QuestionListItemProps extends React.HTMLAttributes<HTMLDivElement> {
-  question: TestQuestionModel;
-  order: number;
-  onEditQuestion: (question: TestQuestionModel) => void;
-}
-
-const QuestionListItem = (props: QuestionListItemProps) => {
-  const { question, order } = props;
-  switch (question.type) {
-    case QuestionType.SingleChoice:
-    case QuestionType.MultipleChoice:
-      return (
-        <div className={cn("flex items-center gap-3", props.className)}>
-          <div>
-            <span className="text-gray-600">{order}. </span>
-            {question.question}
-          </div>
-          <Tooltip>
-            <TooltipTrigger
-              type="button"
-              onClick={() => props.onEditQuestion(question)}
-            >
-              <Edit size={20} className="text-gray-600" />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Edit question</p>
-            </TooltipContent>
-          </Tooltip>
-        </div>
-      );
-    case QuestionType.NumberInput:
-      return <div>Number input</div>;
-    case QuestionType.TextInput:
-      return <div>Text input</div>;
-    default:
-      return null;
-  }
-};
 
 export interface QuestionsListProps {
   questions: TestQuestionModel[];
   onEditQuestion: (question: TestQuestionModel) => void;
+  onDeleteQuestion: (index: number) => void;
+}
+
+function questionTitle(question: TestQuestionModel) {
+  switch (question.type) {
+    case QuestionType.SingleChoice:
+    case QuestionType.MultipleChoice:
+      return question.question;
+    case QuestionType.NumberInput:
+      return "Number input";
+    case QuestionType.TextInput:
+      return "Text input";
+    default:
+      return null;
+  }
+}
+
+function questionType(question: TestQuestionModel) {
+  switch (question.type) {
+    case QuestionType.SingleChoice:
+      return "Single choice";
+    case QuestionType.MultipleChoice:
+      return "Multiple choice";
+    case QuestionType.NumberInput:
+      return "Number input";
+    case QuestionType.TextInput:
+      return "Text input";
+    default:
+      return null;
+  }
 }
 
 export const QuestionsList = (props: QuestionsListProps) => {
   const { questions } = props;
-  // TODO: use table for question representations
-  return questions.length === 0 ? (
-    <div className="text-gray-600 text-sm">No questions</div>
-  ) : (
-    questions.map((question, index) => (
-      <QuestionListItem
-        className="mb-2"
-        key={index}
-        question={question}
-        order={index + 1}
-        onEditQuestion={props.onEditQuestion}
-      />
-    ))
+
+  if (questions.length === 0) {
+    return <div className="text-sm text-gray-600">No added questions</div>;
+  }
+
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Title</TableHead>
+          <TableHead>Type</TableHead>
+          <TableHead className="text-right">Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {questions.map((question, index) => (
+          <TableRow key={index}>
+            <TableCell>{questionTitle(question)}</TableCell>
+            <TableCell>{questionType(question)}</TableCell>
+            <TableCell className="flex justify-end gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => props.onEditQuestion(question)}
+              >
+                Edit
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => props.onDeleteQuestion(index)}
+              >
+                Delete
+              </Button>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 };

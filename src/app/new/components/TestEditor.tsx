@@ -50,13 +50,21 @@ export const TestEditor = (props: TestEditorProps) => {
     });
   };
 
+  const handleQuestionDelete = (index: number) => {
+    setQuestions((prev) => prev.filter((_, i) => i !== index));
+    toast.toast({
+      title: "Question deleted",
+      description: "Your question has been deleted from the test",
+    });
+  };
+
   return (
     <>
       <div className="mb-6">
         <TestForm data={props.data} onSubmit={handleTestEditorFormSubmit} />
       </div>
 
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-4">
         <Label>Questions</Label>
         <Button
           type="button"
@@ -85,6 +93,7 @@ export const TestEditor = (props: TestEditorProps) => {
         <QuestionsList
           questions={questions}
           onEditQuestion={handleQuestionEdit}
+          onDeleteQuestion={handleQuestionDelete}
         />
       </div>
 
