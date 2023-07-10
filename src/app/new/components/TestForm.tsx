@@ -14,24 +14,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-export type TestEditorGeneralModel = z.infer<typeof testEditorGeneralSchema>;
+export type TestFormModel = z.infer<typeof testFormSchema>;
 
 export interface TestFormProps {
   title: string;
   description: string;
-  onSubmit: (data: TestEditorGeneralModel) => void;
+  onSubmit: (data: TestFormModel) => void;
 }
 
 export const TEST_FORM_ID = "test-editor-form";
 
-const testEditorGeneralSchema = z.object({
+const testFormSchema = z.object({
   title: z.string(),
   description: z.string(),
 });
 
 export const TestForm = (props: TestFormProps) => {
-  const form = useForm<TestEditorGeneralModel>({
-    resolver: zodResolver(testEditorGeneralSchema),
+  const form = useForm<TestFormModel>({
+    resolver: zodResolver(testFormSchema),
     defaultValues: {
       title: props.title,
       description: props.description,

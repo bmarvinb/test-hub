@@ -8,11 +8,13 @@ import { QuestionDialog } from "./QuestionDialog";
 import { QuestionForm, TestQuestionModel } from "./QuestionForm";
 import { QuestionTypePicker } from "./QuestionTypePicker";
 import { QuestionsList } from "./QuestionsList";
-import { TestEditorGeneralModel, TEST_FORM_ID, TestForm } from "./TestForm";
+import { TestFormModel, TEST_FORM_ID, TestForm } from "./TestForm";
 
-export type TestEditorModel = TestEditorGeneralModel & {
+type TestQuestions = {
   questions: TestQuestionModel[];
 };
+
+export type TestEditorModel = TestFormModel & TestQuestions;
 
 export interface TestEditorProps {
   data: TestEditorModel;
@@ -29,7 +31,7 @@ export const TestEditor = (props: TestEditorProps) => {
   );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const onTestEditorFormSubmit = (data: TestEditorGeneralModel) => {
+  const onTestEditorFormSubmit = (data: TestFormModel) => {
     props.onSubmit({ ...data, questions });
   };
 
