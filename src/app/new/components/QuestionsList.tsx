@@ -17,6 +17,7 @@ const QuestionListItem = (props: QuestionListItemProps) => {
   const { question, order } = props;
   switch (question.type) {
     case QuestionType.SingleChoice:
+    case QuestionType.MultipleChoice:
       return (
         <div className={cn("text-sm flex gap-2", props.className)}>
           <div>
@@ -36,8 +37,6 @@ const QuestionListItem = (props: QuestionListItemProps) => {
           </Tooltip>
         </div>
       );
-    case QuestionType.MultipleChoice:
-      return <div>Multiple choise</div>;
     case QuestionType.NumberInput:
       return <div>Number input</div>;
     case QuestionType.TextInput:

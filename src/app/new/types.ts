@@ -5,13 +5,15 @@ export enum QuestionType {
   TextInput = "text-input",
 }
 
+export type QuestionChoiceOption = {
+  value: string;
+  isAnswer: boolean;
+};
+
 export type ChoiceBasedQuestion = {
   type: QuestionType.SingleChoice | QuestionType.MultipleChoice;
   question: string;
-  options: {
-    value: string;
-    isAnswer: boolean;
-  }[];
+  options: QuestionChoiceOption[];
 };
 
 export type NumberInputQuestion = {

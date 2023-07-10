@@ -18,11 +18,17 @@ import {
   TooltipTrigger,
 } from "@/components/ui/Tooltip";
 import { FormMode } from "@/lib/form";
+import { useToast } from "@/lib/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle2, Circle, XCircle } from "lucide-react";
+import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
-import { ChoiceBasedQuestion, QuestionType } from "../types";
+import {
+  ChoiceBasedQuestion,
+  QuestionChoiceOption,
+  QuestionType,
+} from "../types";
 
 export const ChoiceBasedQuestionSchema = z.object({
   question: z.string().min(1, "Question cannot be empty"),
@@ -52,31 +58,72 @@ export interface ChoiceBasedQuestionFormProps {
   onSubmit: (data: ChoiceBasedQuestion) => void;
 }
 
+const EMPTY_OPTION: QuestionChoiceOption = { value: "", isAnswer: false };
+
 export const ChoiceBasedQuestionForm = (
   props: ChoiceBasedQuestionFormProps
 ) => {
+  const toast = useToast();
   const data = props.data.mode === FormMode.Edit ? props.data.question : null;
+  const { singleChoice } = props.data;
   const form = useForm<z.infer<typeof ChoiceBasedQuestionSchema>>({
     resolver: zodResolver(ChoiceBasedQuestionSchema),
     defaultValues: {
       question: data?.question ?? "",
-      options: data?.options ?? [],
+      options: data?.options ?? [EMPTY_OPTION],
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, update } = useFieldArray({
     rules: { minLength: 0 },
     control: form.control,
     name: "options",
   });
 
+  useEffect(() => {
+    form.reset();
+  }, [form, append, singleChoice]);
+
   const onSubmit = (values: z.infer<typeof ChoiceBasedQuestionSchema>) => {
+    if (!fields.some((field) => field.isAnswer)) {
+      return toast.toast({
+        variant: "destructive",
+        title: "Invalid form",
+        description: "Please mark at least one option as an answer",
+      });
+    }
     props.onSubmit({
-      type: props.data.singleChoice
+      type: singleChoice
         ? QuestionType.SingleChoice
         : QuestionType.MultipleChoice,
       ...values,
     });
+  };
+
+  const markAsAnswer = (id: string) => {
+    fields.forEach((field, index) => {
+      const values = form.getValues("options")[index];
+      if (singleChoice) {
+        update(index, {
+          ...values,
+          isAnswer: false,
+        });
+      }
+      if (field.id === id) {
+        update(index, {
+          ...values,
+          isAnswer: true,
+        });
+      }
+    });
+  };
+
+  const unmarkAsAnswer = (index: number) => {
+    update(index, { ...form.getValues("options")[index], isAnswer: false });
+  };
+
+  const removeOption = (index: number) => {
+    fields.length === 1 ? update(index, EMPTY_OPTION) : remove(index);
   };
 
   return (
@@ -113,89 +160,78 @@ export const ChoiceBasedQuestionForm = (
           </Button>
         </div>
 
-        {fields.length === 0 ? (
-          <div className="text-gray-500 text-sm">No added options</div>
-        ) : (
-          fields.map(({ id }, index) => {
-            return (
-              <FormField
-                key={id}
-                control={form.control}
-                name={`options.${index}`}
-                render={({ field }) => {
-                  console.log("field", field);
-                  return (
-                    <FormItem>
-                      <FormControl>
-                        <div className="flex items-center gap-3">
-                          {field.value.isAnswer ? (
-                            <Tooltip>
-                              <TooltipTrigger
-                                type="button"
-                                onClick={() =>
-                                  field.onChange({
-                                    value: field.value.value,
-                                    isAnswer: false,
-                                  })
-                                }
-                              >
-                                <CheckCircle2 className="text-green-500" />
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Unmark as answer</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          ) : (
-                            <Tooltip>
-                              <TooltipTrigger
-                                type="button"
-                                onClick={() => {
-                                  field.onChange({
-                                    value: field.value.value,
-                                    isAnswer: true, // TODO: wrong implementation
-                                  });
-                                }}
-                              >
-                                <Circle className="text-gray-500" />
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Mark as answer</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          )}
-
-                          <Input
-                            placeholder={`Question option`}
-                            value={field.value.value}
-                            onChange={(e) => {
-                              field.onChange({
-                                value: e.target.value,
-                                isAnswer: field.value.isAnswer,
-                              });
-                            }}
-                          />
-
+        {fields.map((data, index) => {
+          return (
+            <FormField
+              key={data.id}
+              control={form.control}
+              name={`options.${index}`}
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormControl>
+                      <div className="flex items-center gap-3">
+                        {field.value.isAnswer ? (
                           <Tooltip>
                             <TooltipTrigger
                               type="button"
-                              onClick={() => remove(index)}
+                              onClick={() => {
+                                unmarkAsAnswer(index);
+                              }}
                             >
-                              <XCircle className="text-red-400" />
+                              <CheckCircle2 className="text-green-500" />
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>Remove option</p>
+                              <p>Unmark as answer</p>
                             </TooltipContent>
                           </Tooltip>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-            );
-          })
-        )}
+                        ) : (
+                          <Tooltip>
+                            <TooltipTrigger
+                              type="button"
+                              onClick={() => {
+                                markAsAnswer(data.id);
+                              }}
+                            >
+                              <Circle className="text-gray-500" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Mark as answer</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        )}
+
+                        <Input
+                          placeholder={`Question option`}
+                          value={field.value.value}
+                          onChange={(e) => {
+                            field.onChange({
+                              value: e.target.value,
+                              isAnswer: field.value.isAnswer,
+                            });
+                          }}
+                        />
+
+                        <Tooltip>
+                          <TooltipTrigger
+                            type="button"
+                            onClick={() => removeOption(index)}
+                          >
+                            <XCircle className="text-red-400" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Remove option</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
+          );
+        })}
 
         <Button variant="default" type="submit">
           {props.data.mode === FormMode.Create ? "Create" : "Update"}
