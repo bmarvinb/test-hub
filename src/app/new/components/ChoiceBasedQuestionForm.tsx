@@ -180,83 +180,79 @@ export const ChoiceBasedQuestionForm = ({
         {fields.map((data, index) => {
           return (
             <FormField
-              key={data.id}
+              key={index}
+              // key={`options.${index}`}
               control={form.control}
               name={`options.${index}`}
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormControl>
-                      <div
-                        className="flex items-center gap-3"
-                        data-testid={`options.${index}`}
-                      >
-                        {field.value.isAnswer ? (
-                          <Tooltip>
-                            <TooltipTrigger
-                              type="button"
-                              data-testid={`options.${index}.unmark-as-answer`}
-                              onClick={() => {
-                                unmarkAsAnswer(index);
-                              }}
-                            >
-                              <CheckCircle2
-                                size={20}
-                                className="text-green-500"
-                              />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Unmark as answer</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        ) : (
-                          <Tooltip>
-                            <TooltipTrigger
-                              type="button"
-                              data-testid={`options.${index}.mark-as-answer`}
-                              onClick={() => {
-                                // TODO: when I use keyboard focus is lost after clicking on the button
-                                markAsAnswer(data.id);
-                              }}
-                            >
-                              <Circle size={20} className="text-gray-600" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Mark as answer</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        )}
-
-                        <Input
-                          placeholder={`Question option`}
-                          value={field.value.value}
-                          data-testid={`options.${index}.option`}
-                          onChange={(e) => {
-                            field.onChange({
-                              value: e.target.value,
-                              isAnswer: field.value.isAnswer,
-                            });
-                          }}
-                        />
-
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div
+                      className="flex items-center gap-3"
+                      data-testid={`options.${index}`}
+                    >
+                      {data.isAnswer ? (
                         <Tooltip>
                           <TooltipTrigger
                             type="button"
-                            data-testid={`options.${index}.remove-option`}
-                            onClick={() => removeOption(index)}
+                            data-testid={`options.${index}.unmark-as-answer`}
+                            onClick={() => {
+                              unmarkAsAnswer(index);
+                            }}
                           >
-                            <XCircle size={20} className="text-red-400" />
+                            <CheckCircle2
+                              size={20}
+                              className="text-green-500"
+                            />
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>Remove option</p>
+                            <p>Unmark as answer</p>
                           </TooltipContent>
                         </Tooltip>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
+                      ) : (
+                        <Tooltip>
+                          <TooltipTrigger
+                            type="button"
+                            data-testid={`options.${index}.mark-as-answer`}
+                            onClick={() => markAsAnswer(data.id)}
+                          >
+                            <Circle size={20} className="text-gray-600" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Mark as answer</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
+
+                      <Input
+                        placeholder={`Question option`}
+                        value={field.value.value}
+                        data-testid={`options.${index}.option`}
+                        onChange={(e) => {
+                          field.onChange({
+                            value: e.target.value,
+                            isAnswer: field.value.isAnswer,
+                          });
+                        }}
+                      />
+
+                      <Tooltip>
+                        <TooltipTrigger
+                          type="button"
+                          data-testid={`options.${index}.remove-option`}
+                          onClick={() => removeOption(index)}
+                        >
+                          <XCircle size={20} className="text-red-400" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Remove option</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
           );
         })}
