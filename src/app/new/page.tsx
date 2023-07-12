@@ -1,42 +1,52 @@
 "use client";
 
 import { Title } from "@/components/ui/Title";
+import { useToast } from "@/lib/hooks/use-toast";
+import { CreateTestDTO } from "@/shared/dtos/test-dto";
+import { useMutation } from "@tanstack/react-query";
 import { TestEditor } from "./components/TestEditor";
-import { QuestionType, TestEditorModel } from "./types";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const newTest: TestEditorModel = {
-  title: "",
-  description: "",
-  questions: [],
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const editTest: TestEditorModel = {
-  title: "Test title",
-  description: "Test description",
-  questions: [
-    {
-      type: QuestionType.SingleChoice,
-      question: "Question 1",
-      options: [
-        { isAnswer: true, value: "Option 1" },
-        { isAnswer: false, value: "Option 2" },
-        { isAnswer: false, value: "Option 3" },
-      ],
-    },
-  ],
-};
+import { testsService } from "./services/tests-service";
+import { TestEditorModel } from "./types";
 
 export default function NewTest() {
-  const data = newTest;
+  const toast = useToast();
+  const {
+    mutate: createTest,
+    isLoading,
+    isError,
+  } = useMutation<void, { message: string }, CreateTestDTO>(
+    async (data) => testsService.create(data),
+    {
+      onSuccess: () => {
+        toast.toast({
+          title: "Test created",
+          description: "You can start sharing your test now",
+        });
+      },
+      onError: (error) => {
+        console.log("Error", error);
+        toast.toast({
+          variant: "destructive",
+          title: "Error occurred",
+          description: error.message,
+        });
+      },
+    }
+  );
+
+  const handleSubmit = (data: TestEditorModel) => {
+    createTest(data);
+  };
+
   return (
     <div className="max-w-4xl mx-auto py-8 px-6">
-      <Title className="mb-8">
-        {data.title ? "Update test" : "Create test"}
-      </Title>
+      <Title className="mb-8">Create test</Title>
 
-      <TestEditor onSubmit={(data) => console.log("Data to send", data)} />
+      <TestEditor
+        isLoading={isLoading}
+        isError={isError}
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 }

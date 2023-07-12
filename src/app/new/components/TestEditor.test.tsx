@@ -75,7 +75,6 @@ describe("TestEditor", () => {
         fireEvent.click(await screen.getByRole("button", { name: /Create/i }));
       });
 
-      expect(await screen.findByText(/Test created/i)).toBeInTheDocument();
       expect(onSubmit).toHaveBeenCalled();
     });
   });

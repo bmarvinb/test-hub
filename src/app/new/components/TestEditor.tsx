@@ -23,6 +23,8 @@ export type TestEditorMode = TestEditorCreateMode | TestEditorEditMode;
 
 export interface TestEditorProps {
   mode?: TestEditorMode;
+  isLoading?: boolean;
+  isError?: boolean;
   onSubmit: (test: TestEditorModel) => void;
 }
 
@@ -32,6 +34,7 @@ function isEditMode(context: TestEditorMode): context is TestEditorEditMode {
 
 export const TestEditor = ({
   mode = { mode: Mode.Create },
+  isLoading = false,
   onSubmit,
 }: TestEditorProps) => {
   const toast = useToast();
@@ -50,10 +53,6 @@ export const TestEditor = ({
       });
     }
     onSubmit({ ...data, questions });
-    toast.toast({
-      title: "Test created",
-      description: "You can start sharing your test now",
-    });
   };
 
   const handleQuestionFormSubmit = (question: TestQuestionModel) => {
@@ -121,7 +120,7 @@ export const TestEditor = ({
         />
       </div>
 
-      <Button type="submit" form={TEST_FORM_ID}>
+      <Button type="submit" form={TEST_FORM_ID} disabled={isLoading}>
         {isEditMode(mode) ? "Update" : "Create"}
       </Button>
     </>
