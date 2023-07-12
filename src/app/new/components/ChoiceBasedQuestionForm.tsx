@@ -30,16 +30,6 @@ import {
   QuestionType,
 } from "../types";
 
-export const ChoiceBasedQuestionSchema = z.object({
-  question: z.string().min(1, "Question cannot be empty"),
-  options: z.array(
-    z.object({
-      value: z.string().min(1, "Option cannot be empty"),
-      isAnswer: z.boolean(),
-    })
-  ),
-});
-
 type CommonFormData = {
   singleChoice: boolean;
 };
@@ -55,16 +45,26 @@ type EditFormData = CommonFormData & {
 
 export type FormData = CreateFormData | EditFormData;
 
-function isEditMode(context: FormData): context is EditFormData {
-  return context.mode === Mode.Edit;
-}
-
 export interface ChoiceBasedQuestionFormProps {
   data: FormData;
   onSubmit: (data: ChoiceBasedQuestion) => void;
 }
 
 const EMPTY_OPTION: QuestionChoiceOption = { value: "", isAnswer: false };
+
+function isEditMode(context: FormData): context is EditFormData {
+  return context.mode === Mode.Edit;
+}
+
+const ChoiceBasedQuestionSchema = z.object({
+  question: z.string().min(1, "Question cannot be empty"),
+  options: z.array(
+    z.object({
+      value: z.string().min(1, "Option cannot be empty"),
+      isAnswer: z.boolean(),
+    })
+  ),
+});
 
 export const ChoiceBasedQuestionForm = ({
   data,
@@ -95,7 +95,7 @@ export const ChoiceBasedQuestionForm = ({
 
   useEffect(() => {
     form.reset();
-  }, [form, append, singleChoice]);
+  }, [form, singleChoice]);
 
   const handleSubmit = (values: z.infer<typeof ChoiceBasedQuestionSchema>) => {
     if (!fields.some((field) => field.isAnswer)) {

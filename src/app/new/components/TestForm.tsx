@@ -28,13 +28,13 @@ type EditFormData = {
 
 export type FormData = CreateFormData | EditFormData;
 
-function isEditMode(context: FormData): context is EditFormData {
-  return context.mode === Mode.Edit;
-}
-
 export interface TestFormProps {
   data?: FormData;
   onSubmit: (data: TestFormModel) => void;
+}
+
+function isEditMode(context: FormData): context is EditFormData {
+  return context.mode === Mode.Edit;
 }
 
 export const TEST_FORM_ID = "test-editor-form";

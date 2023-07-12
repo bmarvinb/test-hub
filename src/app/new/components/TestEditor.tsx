@@ -21,13 +21,13 @@ type TestEditorEditMode = {
 
 export type TestEditorMode = TestEditorCreateMode | TestEditorEditMode;
 
-function isEditMode(context: TestEditorMode): context is TestEditorEditMode {
-  return context.mode === Mode.Edit;
-}
-
 export interface TestEditorProps {
   mode?: TestEditorMode;
   onSubmit: (test: TestEditorModel) => void;
+}
+
+function isEditMode(context: TestEditorMode): context is TestEditorEditMode {
+  return context.mode === Mode.Edit;
 }
 
 export const TestEditor = ({

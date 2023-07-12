@@ -26,16 +26,16 @@ export type QuestionDialogContext =
   | QuestionDialogCreateContext
   | QuestionDialogEditContext;
 
-function isEditMode(
-  context: QuestionDialogContext
-): context is QuestionDialogEditContext {
-  return context.mode === Mode.Edit;
-}
-
 export interface QuestionDialogProps {
   context: QuestionDialogContext;
   onClose: () => void;
   onQuestionFormSubmit: (question: TestQuestionModel) => void;
+}
+
+function isEditMode(
+  context: QuestionDialogContext
+): context is QuestionDialogEditContext {
+  return context.mode === Mode.Edit;
 }
 
 export const QuestionDialog = ({
@@ -47,6 +47,13 @@ export const QuestionDialog = ({
   const [questionType, setQuestionType] = useState<QuestionType>(
     editMode ? context.question.type : QuestionType.SingleChoice
   );
+
+  const questionTypes: [QuestionType, string][] = [
+    [QuestionType.SingleChoice, "Single choice"],
+    [QuestionType.MultipleChoice, "Multiple choice"],
+    [QuestionType.NumberInput, "Number input"],
+    [QuestionType.TextInput, "Text input"],
+  ];
 
   const title = editMode ? "Edit question" : "Add question";
 
@@ -64,6 +71,7 @@ export const QuestionDialog = ({
 
         <div className="grid gap-4">
           <QuestionTypePicker
+            options={questionTypes}
             value={questionType}
             disabled={editMode}
             onChange={setQuestionType}

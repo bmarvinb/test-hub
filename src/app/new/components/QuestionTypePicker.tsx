@@ -9,20 +9,15 @@ import {
 import { QuestionType } from "../types";
 
 export interface QuestionTypePickerProps {
+  options: [QuestionType, string][];
   value: QuestionType;
   disabled: boolean;
   onChange: (value: QuestionType) => void;
 }
 
-const questionTypes: [QuestionType, string][] = [
-  [QuestionType.SingleChoice, "Single choice"],
-  [QuestionType.MultipleChoice, "Multiple choice"],
-  [QuestionType.NumberInput, "Number input"],
-  [QuestionType.TextInput, "Text input"],
-];
-
 export const QuestionTypePicker = ({
-  value: questionType,
+  options,
+  value,
   disabled,
   onChange: setQuestionType,
 }: QuestionTypePickerProps) => {
@@ -30,7 +25,7 @@ export const QuestionTypePicker = ({
     <>
       <Label>Question type</Label>
       <Select
-        defaultValue={questionType}
+        defaultValue={value}
         disabled={disabled}
         onValueChange={(value) => setQuestionType(value as QuestionType)}
       >
@@ -39,7 +34,7 @@ export const QuestionTypePicker = ({
         </SelectTrigger>
 
         <SelectContent>
-          {questionTypes.map(([value, label]) => (
+          {options.map(([value, label]) => (
             <SelectItem key={value} value={value}>
               {label}
             </SelectItem>
