@@ -5,17 +5,17 @@ export async function POST(req: Request) {
   const data = JSON.parse(await req.json());
   const response = createTestSchema.safeParse(data);
 
-  // if (!response.success) {
-  //   return NextResponse.json(
-  //     {
-  //       message: "Invalid request parameters",
-  //       issues: response.error.issues,
-  //     },
-  //     {
-  //       status: 400,
-  //     }
-  //   );
-  // }
+  if (!response.success) {
+    return NextResponse.json(
+      {
+        message: "Invalid request parameters",
+        issues: response.error.issues,
+      },
+      {
+        status: 400,
+      }
+    );
+  }
 
   try {
     // const { id } = await testsService.create(response.data);
