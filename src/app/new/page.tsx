@@ -6,7 +6,8 @@ import { CreateTestDTO } from "@/shared/dtos/test-dto";
 import { useMutation } from "@tanstack/react-query";
 import { TestEditor } from "./components/TestEditor";
 import { testsService } from "./services/tests-service";
-import { TestEditorModel } from "./types";
+import { QuestionType, TestEditorModel } from "./types";
+import { Mode } from "@/lib/form";
 
 export default function NewTest() {
   const toast = useToast();
@@ -43,6 +44,25 @@ export default function NewTest() {
       <Title className="mb-8">Create test</Title>
 
       <TestEditor
+        mode={{
+          mode: Mode.Edit,
+          test: {
+            title: "Test title",
+            description: "Test description",
+            questions: [
+              {
+                type: QuestionType.SingleChoice,
+                question: "Question title",
+                options: [
+                  {
+                    value: "Option title",
+                    isAnswer: true,
+                  },
+                ],
+              },
+            ],
+          },
+        }}
         isLoading={isLoading}
         isError={isError}
         onSubmit={handleSubmit}
