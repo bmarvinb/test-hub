@@ -14,20 +14,86 @@ datasource db {
 }
 
 model Test {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now()) @map(name: "created_at")
-  updatedAt   DateTime @updatedAt @map(name: "updated_at")
+  id          String         @id @default(uuid())
   title       String
-  description String?
-  published   Boolean  @default(false)
-  timeLimit   Int?     @map(name: "time_limit")
-  tags        Tag[]    @relation(name: "TestTag")
+  description String
+  questions   TestQuestion[]
 }
 
-model Tag {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
-  title     String   @unique
-  tests     Test[]   @relation(name: "TestTag")
+model TestQuestion {
+  id            String       @id @default(uuid())
+  testId        String
+  questionType  QuestionType
+  test          Test         @relation(fields: [testId], references: [id])
+  choiceBasedId String?
+  textBasedId   String?
+  numberBasedId String?
+  ChoiceBased   ChoiceBased? @relation(fields: [choiceBasedId], references: [id])
+  TextBased     TextBased?   @relation(fields: [textBasedId], references: [id])
+  NumberBased   NumberBased? @relation(fields: [numberBasedId], references: [id])
+}
+
+model ChoiceBased {
+  id                   String                 @id @default(uuid())
+  question             String
+  singleChoice         Boolean
+  choiceOptions        ChoiceOption[]
+  ChoiceToChoiceOption ChoiceToChoiceOption[]
+  TestQuestion         TestQuestion[]
+}
+
+model ChoiceToChoiceOption {
+  id       String       @id @default(uuid())
+  choiceId String
+  optionId String
+  choice   ChoiceBased  @relation(fields: [choiceId], references: [id])
+  option   ChoiceOption @relation(fields: [optionId], references: [id])
+}
+
+model ChoiceOption {
+  id            String                 @id @default(uuid())
+  value         String
+  isAnswer      Boolean
+  choices       ChoiceToChoiceOption[]
+  ChoiceBased   ChoiceBased?           @relation(fields: [choiceBasedId], references: [id])
+  choiceBasedId String?
+}
+
+model TextBased {
+  id               String             @id @default(uuid())
+  question         String
+  textAnswer       TextAnswer         @relation(fields: [textAnswerId], references: [id])
+  textAnswerId     String
+  TextToTextAnswer TextToTextAnswer[]
+  TestQuestion     TestQuestion[]
+}
+
+model TextToTextAnswer {
+  id           String     @id @default(uuid())
+  textBasedId  String
+  textAnswerId String
+  textBased    TextBased  @relation(fields: [textBasedId], references: [id])
+  textAnswer   TextAnswer @relation(fields: [textAnswerId], references: [id])
+}
+
+model TextAnswer {
+  id        String             @id @default(uuid())
+  answer    String
+  texts     TextToTextAnswer[]
+  TextBased TextBased[]
+}
+
+model NumberBased {
+  id           String         @id @default(uuid())
+  question     String
+  answer       Float
+  tolerance    Float
+  TestQuestion TestQuestion[]
+}
+
+enum QuestionType {
+  SINGLE_CHOICE
+  MULTIPLE_CHOICE
+  NUMBER
+  TEXT
 }

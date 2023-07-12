@@ -26,7 +26,7 @@ export type NumberInputQuestion = {
 export type TextInputQuestion = {
   type: QuestionType.TextInput;
   question: string;
-  answer: string | string[];
+  answer: string;
 };
 
 export type TestQuestionModel =
