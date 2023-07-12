@@ -8,6 +8,7 @@ export interface TestsService {
 export const testsService: TestsService = {
   create: async (testDTO: CreateTestDTO) => {
     try {
+      // TODO: before moving on, read Prisma documentation
       const { id } = await prisma.test.create({
         data: {
           title: testDTO.title,
