@@ -60,27 +60,10 @@ model ChoiceOption {
 }
 
 model TextBased {
-  id               String             @id @default(uuid())
-  question         String
-  textAnswer       TextAnswer         @relation(fields: [textAnswerId], references: [id])
-  textAnswerId     String
-  TextToTextAnswer TextToTextAnswer[]
-  TestQuestion     TestQuestion[]
-}
-
-model TextToTextAnswer {
-  id           String     @id @default(uuid())
-  textBasedId  String
-  textAnswerId String
-  textBased    TextBased  @relation(fields: [textBasedId], references: [id])
-  textAnswer   TextAnswer @relation(fields: [textAnswerId], references: [id])
-}
-
-model TextAnswer {
-  id        String             @id @default(uuid())
-  answer    String
-  texts     TextToTextAnswer[]
-  TextBased TextBased[]
+  id           String         @id @default(uuid())
+  question     String
+  answer       String
+  TestQuestion TestQuestion[]
 }
 
 model NumberBased {
