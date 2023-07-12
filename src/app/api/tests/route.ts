@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { createTestSchema } from "@/shared/dtos/test-dto";
-import { testsService } from "./services/tests-service";
+import { createTestSchema, testsService } from "./services/tests-service";
 
 export async function POST(req: Request) {
   const data = JSON.parse(await req.json());
