@@ -1,5 +1,6 @@
 import { createTestSchema } from "@/shared/dtos/test-dto";
 import { NextResponse } from "next/server";
+import { testsService } from "./services/tests-service";
 
 export async function POST(req: Request) {
   const data = JSON.parse(await req.json());
@@ -18,9 +19,9 @@ export async function POST(req: Request) {
   }
 
   try {
-    // const { id } = await testsService.create(response.data);
+    const { id } = await testsService.create(response.data);
     return NextResponse.json(
-      { message: "Test created", id: "" },
+      { message: "Test created", id },
       {
         status: 200,
       }
