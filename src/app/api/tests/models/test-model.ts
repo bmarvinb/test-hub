@@ -1,5 +1,5 @@
-import prisma, { QuestionType as QuestionTypeDB } from "@/lib/prisma";
-import { CreateTestDTO, QuestionType } from "@/shared/dtos/test-dto";
+import prisma from "@/lib/prisma";
+import { CreateTestDTO } from "@/shared/dtos/test-dto";
 
 export class TestModel {
   private dto: CreateTestDTO;
