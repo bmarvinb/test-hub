@@ -8,7 +8,7 @@ import {
   ContactError,
   ContactDTO,
   contactService,
-} from "@/app/contact/services/contact";
+} from "@/app/contact/services/contact-service";
 import { Title } from "@/components/ui/Title";
 import { useToast } from "@/lib/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
