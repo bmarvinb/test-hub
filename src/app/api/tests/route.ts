@@ -1,8 +1,9 @@
+import { createTestSchema } from "@/shared/dtos/test-dto";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  // const data = JSON.parse(await req.json());
-  // const response = createTestSchema.safeParse(data);
+  const data = JSON.parse(await req.json());
+  const response = createTestSchema.safeParse(data);
 
   // if (!response.success) {
   //   return NextResponse.json(
