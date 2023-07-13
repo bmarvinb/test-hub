@@ -147,7 +147,7 @@ export const ChoiceBasedQuestionForm = ({
               <FormLabel>Question</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Type your question"
+                  placeholder="Your question"
                   {...field}
                   data-testid="question"
                 />
