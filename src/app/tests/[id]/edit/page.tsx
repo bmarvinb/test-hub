@@ -9,7 +9,7 @@ import { useToast } from "@/lib/hooks/use-toast";
 import { MutateTest, Test } from "@/shared/models/test";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-function testDTOtoTestEditorModel(dto: Test): TestEditorModel {
+function testToTestEditorModel(dto: Test): TestEditorModel {
   return {
     title: dto.title,
     description: dto.description,
@@ -66,7 +66,7 @@ export default function EditTest(data: { params: { id: string } }) {
         <div>Loading...</div>
       ) : test.isSuccess ? (
         <TestEditor
-          mode={{ mode: Mode.Edit, test: testDTOtoTestEditorModel(test.data) }}
+          mode={{ mode: Mode.Edit, test: testToTestEditorModel(test.data) }}
           isLoading={isLoading}
           isError={isError}
           onSubmit={handleSubmit}
