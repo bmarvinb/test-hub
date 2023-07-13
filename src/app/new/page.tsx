@@ -2,12 +2,11 @@
 
 import { Title } from "@/components/ui/Title";
 import { useToast } from "@/lib/hooks/use-toast";
-import { CreateTestDTO } from "@/shared/dtos/test-dto";
+import { MutateTestDTO } from "@/shared/dtos/test-dto";
 import { useMutation } from "@tanstack/react-query";
 import { TestEditor } from "./components/TestEditor";
 import { testsService } from "./services/tests-service";
-import { QuestionType, TestEditorModel } from "./types";
-import { Mode } from "@/lib/form";
+import { TestEditorModel } from "./types";
 
 export default function NewTest() {
   const toast = useToast();
@@ -15,7 +14,7 @@ export default function NewTest() {
     mutate: createTest,
     isLoading,
     isError,
-  } = useMutation<void, { message: string }, CreateTestDTO>(
+  } = useMutation<void, { message: string }, MutateTestDTO>(
     async (data) => testsService.create(data),
     {
       onSuccess: () => {
@@ -44,25 +43,6 @@ export default function NewTest() {
       <Title className="mb-8">Create test</Title>
 
       <TestEditor
-        mode={{
-          mode: Mode.Edit,
-          test: {
-            title: "Test title",
-            description: "Test description",
-            questions: [
-              {
-                type: QuestionType.SingleChoice,
-                question: "Question title",
-                options: [
-                  {
-                    value: "Option title",
-                    isAnswer: true,
-                  },
-                ],
-              },
-            ],
-          },
-        }}
         isLoading={isLoading}
         isError={isError}
         onSubmit={handleSubmit}

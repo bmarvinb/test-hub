@@ -1,9 +1,4 @@
-export enum QuestionType {
-  SingleChoice = "single-choice",
-  MultipleChoice = "multiple-choice",
-  NumberInput = "number-input",
-  TextInput = "text-input",
-}
+import { QuestionType } from "@/shared/dtos/test-dto";
 
 export type QuestionChoiceOption = {
   value: string;

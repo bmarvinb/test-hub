@@ -9,9 +9,10 @@ import {
 } from "@/components/ui/Dialog";
 import { Mode } from "@/lib/form";
 import { useState } from "react";
-import { QuestionType, TestQuestionModel } from "../types";
+import { TestQuestionModel } from "../types";
 import { CreateQuestionForm, EditQuestionForm } from "./QuestionForm";
 import { QuestionTypePicker } from "./QuestionTypePicker";
+import { QuestionType } from "@/shared/dtos/test-dto";
 
 type QuestionDialogCreateContext = {
   mode: Mode.Create;

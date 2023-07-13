@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select";
-import { QuestionType } from "../types";
+import { QuestionType } from "@/shared/dtos/test-dto";
 
 export interface QuestionTypePickerProps {
   options: [QuestionType, string][];

@@ -24,11 +24,8 @@ import { CheckCircle2, Circle, XCircle } from "lucide-react";
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
-import {
-  ChoiceBasedQuestion,
-  QuestionChoiceOption,
-  QuestionType,
-} from "../types";
+import { ChoiceBasedQuestion, QuestionChoiceOption } from "../types";
+import { QuestionType } from "@/shared/dtos/test-dto";
 
 type CommonFormData = {
   singleChoice: boolean;

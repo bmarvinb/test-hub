@@ -7,7 +7,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table";
-import { QuestionType, TestQuestionModel } from "../types";
+import { TestQuestionModel } from "../types";
+import { QuestionType } from "@/shared/dtos/test-dto";
 
 export interface QuestionsListProps {
   questions: TestQuestionModel[];

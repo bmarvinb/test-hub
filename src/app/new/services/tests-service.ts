@@ -1,14 +1,25 @@
 import { client } from "@/lib/client";
-import { CreateTestDTO } from "@/shared/dtos/test-dto";
+import { MutateTestDTO } from "@/shared/dtos/test-dto";
 
 interface TestsService {
-  create: (data: CreateTestDTO) => Promise<void>;
+  find: (id: string) => Promise<unknown>;
+  create: (data: MutateTestDTO) => Promise<void>;
+  update: (id: string, data: MutateTestDTO) => Promise<void>;
 }
 
+const ROUTE = "/api/tests";
+
 const testsService: TestsService = {
+  find: async (id) => {
+    return client.get(`${ROUTE}/${id}`);
+  },
+
   create: async (data) => {
-    const res = await client.post("/api/tests", JSON.stringify(data));
-    console.log(res);
+    return client.post(`${ROUTE}`, JSON.stringify(data));
+  },
+
+  update: async (id, data) => {
+    return client.patch(`${ROUTE}/${id}`, JSON.stringify(data));
   },
 };
 

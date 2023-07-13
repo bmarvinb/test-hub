@@ -37,10 +37,16 @@ const testQuestionSchema = z.union([
   textInputQuestionSchema,
 ]);
 
-export const createTestSchema = z.object({
+export const mutateTestSchema = z.object({
   title: z.string(),
   description: z.string(),
   questions: z.array(testQuestionSchema),
 });
 
-export type CreateTestDTO = z.infer<typeof createTestSchema>;
+export type MutateTestDTO = z.infer<typeof mutateTestSchema>;
+
+export type TestDTO = {
+  id: string;
+  title: string;
+  description: string;
+};

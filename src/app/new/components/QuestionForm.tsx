@@ -1,8 +1,9 @@
 "use client";
 
 import { Mode } from "@/lib/form";
-import { QuestionType, TestQuestionModel } from "../types";
+import { TestQuestionModel } from "../types";
 import { ChoiceBasedQuestionForm } from "./ChoiceBasedQuestionForm";
+import { QuestionType } from "@/shared/dtos/test-dto";
 
 export interface CreateQuestionFormProps {
   type: QuestionType;
