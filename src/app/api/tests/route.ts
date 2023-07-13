@@ -2,6 +2,8 @@ import { mutateTestSchema } from "@/shared/dtos/test-dto";
 import { NextResponse } from "next/server";
 import { testService } from "../services/test-service";
 
+const { create } = testService();
+
 export async function POST(req: Request) {
   const data = JSON.parse(await req.json());
   const response = mutateTestSchema.safeParse(data);
@@ -18,10 +20,8 @@ export async function POST(req: Request) {
     );
   }
 
-  const test = testService();
-
   try {
-    const { id } = await test.create(response.data);
+    const { id } = await create(response.data);
     return NextResponse.json(
       { message: "Test created", id },
       {

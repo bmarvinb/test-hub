@@ -2,14 +2,14 @@ import { mutateTestSchema } from "@/shared/dtos/test-dto";
 import { NextResponse } from "next/server";
 import { testService } from "../../services/test-service";
 
+const { find, update } = testService();
+
 export async function GET(
   _req: Request,
   { params }: { params: { id: string } }
 ) {
-  const test = testService();
-
   try {
-    const data = await test.find(params.id);
+    const data = await find(params.id);
     return NextResponse.json(data, {
       status: 200,
     });
@@ -44,10 +44,8 @@ export async function PATCH(
     );
   }
 
-  const test = testService();
-
   try {
-    const { id } = await test.update(params.id, response.data);
+    const { id } = await update(params.id, response.data);
     return NextResponse.json(
       { message: "Test updated", id },
       {
