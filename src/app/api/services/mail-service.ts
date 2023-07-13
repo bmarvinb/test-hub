@@ -26,4 +26,5 @@ const transporter = createTransport({
 });
 
 export type { MailService };
+
 export { mail };
