@@ -1,28 +1,16 @@
 import { client } from "@/lib/client";
-import { z } from "zod";
+import { Contact, contactErrorSchema } from "@/shared/models/contact";
 
 interface ContactService {
-  send: (data: ContactDTO) => Promise<void>;
+  send: (data: Contact) => Promise<void>;
 }
-
-type ContactDTO = {
-  email: string;
-  question: string;
-};
-
-type ContactError = z.infer<typeof errorSchema>;
-
-const errorSchema = z.object({
-  message: z.string(),
-  issues: z.unknown().array().optional(),
-});
 
 const contactService: ContactService = {
   send: async (data) => {
     try {
       await client.post("/api/contact", JSON.stringify(data));
     } catch (error) {
-      const result = errorSchema.safeParse(error);
+      const result = contactErrorSchema.safeParse(error);
       if (!result.success) {
         throw new Error("Invalid response from server");
       }
@@ -31,5 +19,5 @@ const contactService: ContactService = {
   },
 };
 
-export type { ContactService, ContactDTO, ContactError };
+export type { ContactService };
 export { contactService };

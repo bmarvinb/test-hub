@@ -1,8 +1,8 @@
-import { MutateTestDTO, TestDTO } from "@/shared/dtos/test-dto";
+import { MutateTest, Test } from "@/shared/models/test";
+import { Test as TestEntity } from "@prisma/client";
 import { TestModel, testModel } from "../models/test-model";
-import { Test } from "@prisma/client";
 
-function mapTestToDTO(test: Test): TestDTO {
+function mapTestToDTO(test: Test): Test {
   return {
     id: test.id,
     title: test.title,
@@ -11,9 +11,9 @@ function mapTestToDTO(test: Test): TestDTO {
 }
 
 export interface TestService {
-  find(id: string): Promise<TestDTO | null>;
-  create(test: MutateTestDTO): Promise<TestDTO>;
-  update(id: string, test: MutateTestDTO): Promise<TestDTO>;
+  find(id: string): Promise<TestEntity | null>;
+  create(test: MutateTest): Promise<TestEntity>;
+  update(id: string, test: MutateTest): Promise<TestEntity>;
 }
 
 export const testService = (model: TestModel = testModel): TestService => {

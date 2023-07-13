@@ -6,10 +6,10 @@ import { TestEditorModel } from "@/app/new/types";
 import { Title } from "@/components/ui/Title";
 import { Mode } from "@/lib/form";
 import { useToast } from "@/lib/hooks/use-toast";
-import { MutateTestDTO, TestDTO } from "@/shared/dtos/test-dto";
+import { MutateTest, Test } from "@/shared/models/test";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-function testDTOtoTestEditorModel(dto: TestDTO): TestEditorModel {
+function testDTOtoTestEditorModel(dto: Test): TestEditorModel {
   return {
     title: dto.title,
     description: dto.description,
@@ -21,7 +21,7 @@ export default function EditTest(data: { params: { id: string } }) {
   const toast = useToast();
   const id = data.params.id;
 
-  const test = useQuery<unknown, { message: string }, TestDTO>(
+  const test = useQuery<unknown, { message: string }, Test>(
     ["test", id],
     () => {
       return testsService.find(id);
@@ -34,7 +34,7 @@ export default function EditTest(data: { params: { id: string } }) {
     mutate: updateTest,
     isLoading,
     isError,
-  } = useMutation<void, { message: string }, MutateTestDTO>(
+  } = useMutation<void, { message: string }, MutateTest>(
     async (data) => testsService.update(id, data),
     {
       onSuccess: () => {

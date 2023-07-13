@@ -2,7 +2,7 @@
 
 import { Title } from "@/components/ui/Title";
 import { useToast } from "@/lib/hooks/use-toast";
-import { MutateTestDTO } from "@/shared/dtos/test-dto";
+import { MutateTest } from "@/shared/models/test";
 import { useMutation } from "@tanstack/react-query";
 import { TestEditor } from "./components/TestEditor";
 import { testsService } from "./services/tests-service";
@@ -14,7 +14,7 @@ export default function NewTest() {
     mutate: createTest,
     isLoading,
     isError,
-  } = useMutation<void, { message: string }, MutateTestDTO>(
+  } = useMutation<void, { message: string }, MutateTest>(
     async (data) => testsService.create(data),
     {
       onSuccess: () => {

@@ -3,7 +3,7 @@
 import { Mode } from "@/lib/form";
 import { TestQuestionModel } from "../types";
 import { ChoiceBasedQuestionForm } from "./ChoiceBasedQuestionForm";
-import { QuestionType } from "@/shared/dtos/test-dto";
+import { QuestionType } from "@/shared/models/test";
 
 export interface CreateQuestionFormProps {
   type: QuestionType;

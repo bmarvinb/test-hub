@@ -1,10 +1,10 @@
 import { client } from "@/lib/client";
-import { MutateTestDTO } from "@/shared/dtos/test-dto";
+import { MutateTest } from "@/shared/models/test";
 
 interface TestsService {
   find: (id: string) => Promise<unknown>;
-  create: (data: MutateTestDTO) => Promise<void>;
-  update: (id: string, data: MutateTestDTO) => Promise<void>;
+  create: (data: MutateTest) => Promise<void>;
+  update: (id: string, data: MutateTest) => Promise<void>;
 }
 
 const ROUTE = "/api/tests";

@@ -1,4 +1,4 @@
-import { QuestionType } from "@/shared/dtos/test-dto";
+import { QuestionType } from "@/shared/models/test";
 
 export type QuestionChoiceOption = {
   value: string;

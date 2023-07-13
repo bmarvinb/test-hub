@@ -43,10 +43,12 @@ export const mutateTestSchema = z.object({
   questions: z.array(testQuestionSchema),
 });
 
-export type MutateTestDTO = z.infer<typeof mutateTestSchema>;
+export const testSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+});
 
-export type TestDTO = {
-  id: string;
-  title: string;
-  description: string;
-};
+export type MutateTest = z.infer<typeof mutateTestSchema>;
+
+export type Test = z.infer<typeof testSchema>;

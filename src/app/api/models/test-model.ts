@@ -1,11 +1,11 @@
-import { MutateTestDTO } from "@/shared/dtos/test-dto";
 import prisma from "@/lib/prisma";
+import { MutateTest } from "@/shared/models/test";
 import { Test } from "@prisma/client";
 
 export interface TestModel {
   find(id: string): Promise<Test | null>;
-  create(data: MutateTestDTO): Promise<Test>;
-  update(id: string, data: MutateTestDTO): Promise<Test>;
+  create(data: MutateTest): Promise<Test>;
+  update(id: string, data: MutateTest): Promise<Test>;
 }
 
 export const testModel: TestModel = {

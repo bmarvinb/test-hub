@@ -12,7 +12,7 @@ import { useState } from "react";
 import { TestQuestionModel } from "../types";
 import { CreateQuestionForm, EditQuestionForm } from "./QuestionForm";
 import { QuestionTypePicker } from "./QuestionTypePicker";
-import { QuestionType } from "@/shared/dtos/test-dto";
+import { QuestionType } from "@/shared/models/test";
 
 type QuestionDialogCreateContext = {
   mode: Mode.Create;
