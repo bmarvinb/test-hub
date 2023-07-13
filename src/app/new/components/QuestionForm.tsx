@@ -5,6 +5,7 @@ import { QuestionType } from "@/shared/models/test";
 import { TestQuestionModel } from "../types";
 import { ChoiceBasedQuestionForm } from "./ChoiceBasedQuestionForm";
 import { NumberBasedQuestionForm } from "./NumberBasedQuestionForm";
+import { TextBasedQuestionForm } from "./TextBasedQuestionForm";
 
 export interface CreateQuestionFormProps {
   type: QuestionType;
@@ -31,14 +32,9 @@ export const CreateQuestionForm = ({
         />
       );
     case QuestionType.NumberInput:
-      return (
-        <NumberBasedQuestionForm
-          data={{ mode: Mode.Create }}
-          onSubmit={onSubmit}
-        />
-      );
+      return <NumberBasedQuestionForm onSubmit={onSubmit} />;
     case QuestionType.TextInput:
-      return <div>Text input form</div>;
+      return <TextBasedQuestionForm onSubmit={onSubmit} />;
     default:
       return null;
   }
@@ -77,6 +73,7 @@ export const EditQuestionForm = ({
         <NumberBasedQuestionForm
           data={{
             mode: Mode.Edit,
+            question: question.question,
             answer: question.answer,
             tolerance: question.tolerance,
           }}
@@ -84,7 +81,16 @@ export const EditQuestionForm = ({
         />
       );
     case QuestionType.TextInput:
-      return <div>Text input form</div>;
+      return (
+        <TextBasedQuestionForm
+          data={{
+            mode: Mode.Edit,
+            question: question.question,
+            answer: question.answer,
+          }}
+          onSubmit={onSubmit}
+        />
+      );
     default:
       return null;
   }

@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/Button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -14,8 +13,7 @@ import { Mode } from "@/lib/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { NumberInputQuestion } from "../types";
-import { Input } from "@/components/ui/Input";
+import { TextInputQuestion } from "../types";
 import { QuestionType } from "@/shared/models/test";
 import { Textarea } from "@/components/ui/Textarea";
 
@@ -26,50 +24,46 @@ type CreateFormData = {
 type EditFormData = {
   mode: Mode.Edit;
   question: string;
-  answer: number;
-  tolerance: number;
+  answer: string;
 };
 
 export type FormData = CreateFormData | EditFormData;
 
-export interface NumberBasedQuestionFormProps {
+export interface TextBasedQuestionFormProps {
   data?: FormData;
-  onSubmit: (data: NumberInputQuestion) => void;
+  onSubmit: (data: TextInputQuestion) => void;
 }
 
 function isEditMode(context: FormData): context is EditFormData {
   return context.mode === Mode.Edit;
 }
 
-const NumberBasedQuestionSchema = z.object({
+const TextBasedQuestionSchema = z.object({
   question: z.string().min(1, "Question cannot be empty"),
-  answer: z.number(),
-  tolerance: z.number().max(1).min(0),
+  answer: z.string().min(1, "Answer cannot be empty"),
 });
 
-export const NumberBasedQuestionForm = ({
+export const TextBasedQuestionForm = ({
   data = { mode: Mode.Create },
   onSubmit,
-}: NumberBasedQuestionFormProps) => {
+}: TextBasedQuestionFormProps) => {
   const defaultValues = isEditMode(data)
     ? {
         question: data.question,
         answer: data.answer,
-        tolerance: data.tolerance,
       }
     : {
-        answer: 0,
         tolerance: 0,
       };
 
-  const form = useForm<z.infer<typeof NumberBasedQuestionSchema>>({
-    resolver: zodResolver(NumberBasedQuestionSchema),
+  const form = useForm<z.infer<typeof TextBasedQuestionSchema>>({
+    resolver: zodResolver(TextBasedQuestionSchema),
     defaultValues,
   });
 
-  const handleSubmit = (values: z.infer<typeof NumberBasedQuestionSchema>) => {
+  const handleSubmit = (values: z.infer<typeof TextBasedQuestionSchema>) => {
     onSubmit({
-      type: QuestionType.NumberInput,
+      type: QuestionType.TextInput,
       ...values,
     });
   };
@@ -102,42 +96,12 @@ export const NumberBasedQuestionForm = ({
             <FormItem>
               <FormLabel>Answer</FormLabel>
               <FormControl>
-                <Input
-                  type="number"
-                  placeholder="Answer"
+                <Textarea
+                  placeholder="Answser"
                   {...field}
                   data-testid="answer"
-                  onChange={(e) => {
-                    field.onChange(e.target.valueAsNumber);
-                  }}
                 />
               </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="tolerance"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tolerance</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  step={0.01}
-                  min={0}
-                  max={1}
-                  placeholder="Tolerance"
-                  data-testid="tolerance"
-                  {...field}
-                  onChange={(e) => {
-                    field.onChange(e.target.valueAsNumber);
-                  }}
-                />
-              </FormControl>
-              <FormDescription>From 0 to 1</FormDescription>
               <FormMessage />
             </FormItem>
           )}
