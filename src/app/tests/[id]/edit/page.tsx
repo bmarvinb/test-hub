@@ -4,7 +4,6 @@ import { TestEditor } from "@/app/new/components/TestEditor";
 import { testsService } from "@/app/new/services/tests-service";
 import { TestEditorModel } from "@/app/new/models/test-editor-model";
 import { Title } from "@/components/ui/Title";
-import { Mode } from "@/lib/form";
 import { useToast } from "@/lib/hooks/use-toast";
 import { MutateTestData, TestData } from "@/shared/models/test-model";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -64,7 +63,7 @@ export default function EditTest(data: { params: { id: string } }) {
         <div>Loading...</div>
       ) : test.isSuccess ? (
         <TestEditor
-          mode={{ mode: Mode.Edit, test: testToTestEditorModel(test.data) }}
+          initialData={testToTestEditorModel(test.data)}
           isLoading={isLoading}
           isError={isError}
           onSubmit={handleSubmit}

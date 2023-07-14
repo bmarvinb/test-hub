@@ -17,7 +17,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/Tooltip";
-import { Mode } from "@/lib/form";
 import { useToast } from "@/lib/hooks/use-toast";
 import { QuestionType } from "@/shared/models/test-model";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,31 +29,13 @@ import {
   QuestionChoiceOption,
 } from "../../models/test-editor-model";
 
-type CommonFormData = {
-  singleChoice: boolean;
-};
-
-type CreateFormData = CommonFormData & {
-  mode: Mode.Create;
-};
-
-type EditFormData = CommonFormData & {
-  mode: Mode.Edit;
-  question: ChoiceBasedQuestion;
-};
-
-export type FormData = CreateFormData | EditFormData;
-
 export interface ChoiceBasedQuestionFormProps {
-  data: FormData;
+  initialData?: ChoiceBasedQuestion;
+  singleChoice: boolean;
   onSubmit: (data: ChoiceBasedQuestion) => void;
 }
 
 const EMPTY_OPTION: QuestionChoiceOption = { value: "", isAnswer: false };
-
-function isEditMode(context: FormData): context is EditFormData {
-  return context.mode === Mode.Edit;
-}
 
 const ChoiceBasedQuestionSchema = z.object({
   question: z.string().min(1, "Question cannot be empty"),
@@ -67,24 +48,23 @@ const ChoiceBasedQuestionSchema = z.object({
 });
 
 export const ChoiceBasedQuestionForm = ({
-  data,
+  initialData,
+  singleChoice,
   onSubmit,
 }: ChoiceBasedQuestionFormProps) => {
+  const isEditMode = initialData !== undefined;
   const toast = useToast();
-  const { singleChoice } = data;
-  const defaultValues = isEditMode(data)
-    ? {
-        question: data.question.question,
-        options: data.question.options,
-      }
-    : {
-        question: "",
-        options: [EMPTY_OPTION],
-      };
-
   const form = useForm<z.infer<typeof ChoiceBasedQuestionSchema>>({
     resolver: zodResolver(ChoiceBasedQuestionSchema),
-    defaultValues,
+    defaultValues: isEditMode
+      ? {
+          question: initialData.question,
+          options: initialData.options,
+        }
+      : {
+          question: "",
+          options: [EMPTY_OPTION],
+        },
   });
 
   const { fields, append, remove, update } = useFieldArray({
@@ -262,7 +242,7 @@ export const ChoiceBasedQuestionForm = ({
           type="submit"
           data-testid="choice-based-submit-button"
         >
-          {isEditMode(data) ? "Update" : "Create"}
+          {isEditMode ? "Update" : "Create"}
         </Button>
       </form>
     </Form>

@@ -7,46 +7,55 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
-import { Mode } from "@/lib/form";
 import { useState } from "react";
-import { TestQuestionModel } from "../models/test-editor-model";
-import { CreateQuestionForm, EditQuestionForm } from "./QuestionForm";
+import {
+  ChoiceBasedQuestion,
+  NumberInputQuestion,
+  TestQuestionModel,
+  TextInputQuestion,
+} from "../models/test-editor-model";
+import { CreateQuestionForm, InitialData } from "./QuestionForm";
 import { QuestionTypePicker } from "./QuestionTypePicker";
 import { QuestionType } from "@/shared/models/test-model";
 
-type QuestionDialogCreateContext = {
-  mode: Mode.Create;
-};
-
-type QuestionDialogEditContext = {
-  mode: Mode.Edit;
-  question: TestQuestionModel;
-};
-
-export type QuestionDialogContext =
-  | QuestionDialogCreateContext
-  | QuestionDialogEditContext;
+function getQuestionFormInitialData(
+  type: QuestionType,
+  question?: TestQuestionModel
+): InitialData {
+  switch (type) {
+    case QuestionType.SingleChoice:
+    case QuestionType.MultipleChoice:
+      return {
+        type,
+        question: question ? (question as ChoiceBasedQuestion) : undefined,
+      };
+    case QuestionType.NumberInput:
+      return {
+        type,
+        question: question ? (question as NumberInputQuestion) : undefined,
+      };
+    case QuestionType.TextInput:
+      return {
+        type,
+        question: question ? (question as TextInputQuestion) : undefined,
+      };
+  }
+}
 
 export interface QuestionDialogProps {
-  context: QuestionDialogContext;
+  question?: TestQuestionModel;
   onClose: () => void;
   onQuestionFormSubmit: (question: TestQuestionModel) => void;
 }
 
-function isEditMode(
-  context: QuestionDialogContext
-): context is QuestionDialogEditContext {
-  return context.mode === Mode.Edit;
-}
-
 export const QuestionDialog = ({
-  context,
+  question,
   onClose,
   onQuestionFormSubmit,
 }: QuestionDialogProps) => {
-  const editMode = isEditMode(context);
+  const isEditMode = question !== undefined;
   const [questionType, setQuestionType] = useState<QuestionType>(
-    editMode ? context.question.type : QuestionType.SingleChoice
+    isEditMode ? question.type : QuestionType.SingleChoice
   );
 
   const questionTypes: [QuestionType, string][] = [
@@ -56,9 +65,9 @@ export const QuestionDialog = ({
     [QuestionType.TextInput, "Text input"],
   ];
 
-  const title = editMode ? "Edit question" : "Add question";
+  const title = isEditMode ? "Edit question" : "Add question";
 
-  const description = editMode
+  const description = isEditMode
     ? "Edit the question"
     : "Add a new question to the test";
 
@@ -74,20 +83,13 @@ export const QuestionDialog = ({
           <QuestionTypePicker
             options={questionTypes}
             value={questionType}
-            disabled={editMode}
+            disabled={isEditMode}
             onChange={setQuestionType}
           />
-          {editMode ? (
-            <EditQuestionForm
-              question={context.question}
-              onSubmit={onQuestionFormSubmit}
-            />
-          ) : (
-            <CreateQuestionForm
-              type={questionType}
-              onSubmit={onQuestionFormSubmit}
-            />
-          )}
+          <CreateQuestionForm
+            initialData={getQuestionFormInitialData(questionType, question)}
+            onSubmit={onQuestionFormSubmit}
+          />
         </div>
       </DialogContent>
     </Dialog>
