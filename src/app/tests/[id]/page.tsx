@@ -2,13 +2,13 @@
 
 import { testsService } from "@/app/new/services/tests-service";
 import { Title } from "@/components/ui/Title";
-import { Test } from "@/shared/models/test-model";
+import { TestData } from "@/shared/models/test-model";
 import { useQuery } from "@tanstack/react-query";
 
 export default function ViewTest(data: { params: { id: string } }) {
   const id = data.params.id;
 
-  const test = useQuery<unknown, { message: string }, Test>(
+  const test = useQuery<unknown, { message: string }, TestData>(
     ["test", id],
     () => {
       return testsService.find(id);

@@ -1,15 +1,20 @@
 import { client } from "@/lib/client";
-import { MutateTest, Test } from "@/shared/models/test-model";
+import { MutateTestData, TestData } from "@/shared/models/test-model";
 
 export interface TestsService {
-  find: (id: string) => Promise<Test>;
-  create: (data: MutateTest) => Promise<void>;
-  update: (id: string, data: MutateTest) => Promise<void>;
+  findAll: () => Promise<TestData[]>;
+  find: (id: string) => Promise<TestData>;
+  create: (data: MutateTestData) => Promise<void>;
+  update: (id: string, data: MutateTestData) => Promise<void>;
 }
 
 const ROUTE = "/api/tests";
 
 export const testsService: TestsService = {
+  findAll: async () => {
+    return client.get(`${ROUTE}`);
+  },
+
   find: async (id) => {
     return client.get(`${ROUTE}/${id}`);
   },

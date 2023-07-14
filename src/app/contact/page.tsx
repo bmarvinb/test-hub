@@ -7,7 +7,7 @@ import {
 import { contactService } from "@/app/contact/services/contact-service";
 import { Title } from "@/components/ui/Title";
 import { useToast } from "@/lib/hooks/use-toast";
-import { Contact, ContactError } from "@/shared/models/contact-model";
+import { ContactData, ContactError } from "@/shared/models/contact-model";
 import { useMutation } from "@tanstack/react-query";
 
 export default function ContactPage() {
@@ -17,7 +17,7 @@ export default function ContactPage() {
     isLoading,
     isError,
     isSuccess,
-  } = useMutation<void, ContactError, Contact>(
+  } = useMutation<void, ContactError, ContactData>(
     async (data) => contactService.send(data),
     {
       onSuccess: () => {

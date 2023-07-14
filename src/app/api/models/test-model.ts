@@ -1,8 +1,8 @@
 import prisma from "@/lib/prisma";
-import { MutateTest, Test } from "@/shared/models/test-model";
-import client from "@prisma/client";
+import { MutateTestData, TestData } from "@/shared/models/test-model";
+import { Test } from "@prisma/client";
 
-function toJSON(test: client.Test): Test {
+function toJSON(test: Test): TestData {
   return {
     id: test.id,
     title: test.title,
@@ -11,12 +11,18 @@ function toJSON(test: client.Test): Test {
 }
 
 export interface TestModel {
-  find(id: string): Promise<Test | null>;
-  create(data: MutateTest): Promise<Test>;
-  update(id: string, data: MutateTest): Promise<Test>;
+  findAll(): Promise<TestData[]>;
+  find(id: string): Promise<TestData | null>;
+  create(data: MutateTestData): Promise<TestData>;
+  update(id: string, data: MutateTestData): Promise<TestData>;
 }
 
 export const testModel: TestModel = {
+  findAll: async () => {
+    const tests = await prisma.test.findMany();
+    return tests.map(toJSON);
+  },
+
   find: async (id) => {
     const test = await prisma.test.findUnique({
       where: {

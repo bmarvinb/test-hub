@@ -49,6 +49,6 @@ export const testSchema = z.object({
   description: z.string(),
 });
 
-export type MutateTest = z.infer<typeof mutateTestSchema>;
+export type MutateTestData = z.infer<typeof mutateTestSchema>;
 
-export type Test = z.infer<typeof testSchema>;
+export type TestData = z.infer<typeof testSchema>;

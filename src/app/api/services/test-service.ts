@@ -1,14 +1,20 @@
-import { MutateTest, Test } from "@/shared/models/test-model";
+import { MutateTestData, TestData } from "@/shared/models/test-model";
 import { TestModel, testModel } from "../models/test-model";
 
 export interface TestService {
-  find(id: string): Promise<Test | null>;
-  create(test: MutateTest): Promise<Test>;
-  update(id: string, test: MutateTest): Promise<Test>;
+  findAll(): Promise<TestData[]>;
+  find(id: string): Promise<TestData | null>;
+  create(test: MutateTestData): Promise<TestData>;
+  update(id: string, test: MutateTestData): Promise<TestData>;
 }
 
 export const testService = (model: TestModel = testModel): TestService => {
   return {
+    findAll: async () => {
+      const tests = await model.findAll();
+      return tests;
+    },
+
     find: async (id) => {
       const test = await model.find(id);
       return test;

@@ -10,6 +10,6 @@ export const contactErrorSchema = z.object({
   issues: z.unknown().array().optional(),
 });
 
-export type Contact = z.infer<typeof contactSchema>;
+export type ContactData = z.infer<typeof contactSchema>;
 
 export type ContactError = z.infer<typeof contactErrorSchema>;

@@ -1,8 +1,8 @@
 import { client } from "@/lib/client";
-import { Contact, contactErrorSchema } from "@/shared/models/contact-model";
+import { ContactData, contactErrorSchema } from "@/shared/models/contact-model";
 
 interface ContactService {
-  send: (data: Contact) => Promise<void>;
+  send: (data: ContactData) => Promise<void>;
 }
 
 const contactService: ContactService = {
