@@ -2,11 +2,11 @@
 
 import { Title } from "@/components/ui/Title";
 import { useToast } from "@/lib/hooks/use-toast";
-import { MutateTest } from "@/shared/models/test";
+import { MutateTest } from "@/shared/models/test-model";
 import { useMutation } from "@tanstack/react-query";
 import { TestEditor } from "./components/TestEditor";
 import { testsService } from "./services/tests-service";
-import { TestEditorModel } from "./types";
+import { TestEditorModel } from "./models/test-editor-model";
 
 export default function NewTest() {
   const toast = useToast();

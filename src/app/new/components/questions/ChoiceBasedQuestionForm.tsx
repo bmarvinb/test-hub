@@ -19,13 +19,16 @@ import {
 } from "@/components/ui/Tooltip";
 import { Mode } from "@/lib/form";
 import { useToast } from "@/lib/hooks/use-toast";
-import { QuestionType } from "@/shared/models/test";
+import { QuestionType } from "@/shared/models/test-model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle2, Circle, XCircle } from "lucide-react";
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
-import { ChoiceBasedQuestion, QuestionChoiceOption } from "../types";
+import {
+  ChoiceBasedQuestion,
+  QuestionChoiceOption,
+} from "../../models/test-editor-model";
 
 type CommonFormData = {
   singleChoice: boolean;

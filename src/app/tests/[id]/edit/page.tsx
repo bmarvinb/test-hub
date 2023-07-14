@@ -2,11 +2,11 @@
 
 import { TestEditor } from "@/app/new/components/TestEditor";
 import { testsService } from "@/app/new/services/tests-service";
-import { TestEditorModel } from "@/app/new/types";
+import { TestEditorModel } from "@/app/new/models/test-editor-model";
 import { Title } from "@/components/ui/Title";
 import { Mode } from "@/lib/form";
 import { useToast } from "@/lib/hooks/use-toast";
-import { MutateTest, Test } from "@/shared/models/test";
+import { MutateTest, Test } from "@/shared/models/test-model";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 function testToTestEditorModel(dto: Test): TestEditorModel {

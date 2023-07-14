@@ -10,14 +10,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
 import { Mode } from "@/lib/form";
+import { QuestionType } from "@/shared/models/test-model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { NumberInputQuestion } from "../types";
-import { Input } from "@/components/ui/Input";
-import { QuestionType } from "@/shared/models/test";
-import { Textarea } from "@/components/ui/Textarea";
+import { NumberInputQuestion } from "../../models/test-editor-model";
 
 type CreateFormData = {
   mode: Mode.Create;

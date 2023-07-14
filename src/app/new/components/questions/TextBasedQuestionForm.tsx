@@ -9,13 +9,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form";
+import { Textarea } from "@/components/ui/Textarea";
 import { Mode } from "@/lib/form";
+import { QuestionType } from "@/shared/models/test-model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { TextInputQuestion } from "../types";
-import { QuestionType } from "@/shared/models/test";
-import { Textarea } from "@/components/ui/Textarea";
+import { TextInputQuestion } from "../../models/test-editor-model";
 
 type CreateFormData = {
   mode: Mode.Create;

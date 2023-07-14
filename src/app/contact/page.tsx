@@ -7,7 +7,7 @@ import {
 import { contactService } from "@/app/contact/services/contact-service";
 import { Title } from "@/components/ui/Title";
 import { useToast } from "@/lib/hooks/use-toast";
-import { Contact, ContactError } from "@/shared/models/contact";
+import { Contact, ContactError } from "@/shared/models/contact-model";
 import { useMutation } from "@tanstack/react-query";
 
 export default function ContactPage() {

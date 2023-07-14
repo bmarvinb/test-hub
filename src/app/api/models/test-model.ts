@@ -1,6 +1,14 @@
 import prisma from "@/lib/prisma";
-import { MutateTest } from "@/shared/models/test";
-import { Test } from "@prisma/client";
+import { MutateTest, Test } from "@/shared/models/test-model";
+import client from "@prisma/client";
+
+function toJSON(test: client.Test): Test {
+  return {
+    id: test.id,
+    title: test.title,
+    description: test.description,
+  };
+}
 
 export interface TestModel {
   find(id: string): Promise<Test | null>;
@@ -16,20 +24,26 @@ export const testModel: TestModel = {
       },
     });
 
-    return test;
+    if (!test) {
+      return null;
+    }
+
+    return toJSON(test);
   },
 
   create: async (data) => {
-    return await prisma.test.create({
+    const test = await prisma.test.create({
       data: {
         title: data.title,
         description: data.description,
       },
     });
+
+    return toJSON(test);
   },
 
   update: async (id, data) => {
-    return await prisma.test.update({
+    const test = await prisma.test.update({
       where: {
         id: id,
       },
@@ -38,5 +52,7 @@ export const testModel: TestModel = {
         description: data.description,
       },
     });
+
+    return toJSON(test);
   },
 };

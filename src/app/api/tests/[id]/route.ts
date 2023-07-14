@@ -1,4 +1,4 @@
-import { mutateTestSchema } from "@/shared/models/test";
+import { mutateTestSchema } from "@/shared/models/test-model";
 import { NextResponse } from "next/server";
 import { testService } from "../../services/test-service";
 

@@ -1,11 +1,11 @@
 "use client";
 
 import { Mode } from "@/lib/form";
-import { QuestionType } from "@/shared/models/test";
-import { TestQuestionModel } from "../types";
-import { ChoiceBasedQuestionForm } from "./ChoiceBasedQuestionForm";
-import { NumberBasedQuestionForm } from "./NumberBasedQuestionForm";
-import { TextBasedQuestionForm } from "./TextBasedQuestionForm";
+import { QuestionType } from "@/shared/models/test-model";
+import { TestQuestionModel } from "../models/test-editor-model";
+import { ChoiceBasedQuestionForm } from "./questions/ChoiceBasedQuestionForm";
+import { NumberBasedQuestionForm } from "./questions/NumberBasedQuestionForm";
+import { TextBasedQuestionForm } from "./questions/TextBasedQuestionForm";
 
 export interface CreateQuestionFormProps {
   type: QuestionType;

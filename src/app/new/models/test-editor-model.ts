@@ -1,4 +1,4 @@
-import { QuestionType } from "@/shared/models/test";
+import { QuestionType } from "@/shared/models/test-model";
 
 export type QuestionChoiceOption = {
   value: string;

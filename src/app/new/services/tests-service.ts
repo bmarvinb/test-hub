@@ -1,15 +1,15 @@
 import { client } from "@/lib/client";
-import { MutateTest } from "@/shared/models/test";
+import { MutateTest, Test } from "@/shared/models/test-model";
 
-interface TestsService {
-  find: (id: string) => Promise<unknown>;
+export interface TestsService {
+  find: (id: string) => Promise<Test>;
   create: (data: MutateTest) => Promise<void>;
   update: (id: string, data: MutateTest) => Promise<void>;
 }
 
 const ROUTE = "/api/tests";
 
-const testsService: TestsService = {
+export const testsService: TestsService = {
   find: async (id) => {
     return client.get(`${ROUTE}/${id}`);
   },
@@ -22,7 +22,3 @@ const testsService: TestsService = {
     return client.patch(`${ROUTE}/${id}`, JSON.stringify(data));
   },
 };
-
-export type { TestsService };
-
-export { testsService };

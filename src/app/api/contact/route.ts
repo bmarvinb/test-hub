@@ -1,5 +1,5 @@
 import { mail } from "@/app/api/services/mail-service";
-import { contactSchema } from "@/shared/models/contact";
+import { contactSchema } from "@/shared/models/contact-model";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
