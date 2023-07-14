@@ -1,0 +1,62 @@
+import { mutateTestSchema } from "@/shared/models/test-model";
+import { NextResponse } from "next/server";
+import { testService } from "../services/test-service";
+
+const { create, findAll } = testService();
+
+export async function POST(req: Request) {
+  const data = JSON.parse(await req.json());
+  const response = mutateTestSchema.safeParse(data);
+
+  if (!response.success) {
+    return NextResponse.json(
+      {
+        message: "Invalid request parameters",
+        issues: response.error.issues,
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  try {
+    const { id } = await create(response.data);
+    return NextResponse.json(
+      { message: "Test created", id },
+      {
+        status: 200,
+      }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message: "Error while creating test",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+}
+
+// TODO:
+// * Add pagination
+// * Add sorting
+export async function GET(_req: Request) {
+  try {
+    const tests = await findAll();
+    return NextResponse.json(tests, {
+      status: 200,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message: "Error while fetching tests",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+}

@@ -4,13 +4,10 @@ import {
   ContactForm,
   ContactFormModel,
 } from "@/app/contact/components/ContactForm";
-import {
-  ContactError,
-  ContactDTO,
-  contactService,
-} from "@/app/contact/services/contact";
+import { contactService } from "@/app/contact/services/contact-service";
 import { Title } from "@/components/ui/Title";
 import { useToast } from "@/lib/hooks/use-toast";
+import { ContactData, ContactError } from "@/shared/models/contact-model";
 import { useMutation } from "@tanstack/react-query";
 
 export default function ContactPage() {
@@ -20,7 +17,7 @@ export default function ContactPage() {
     isLoading,
     isError,
     isSuccess,
-  } = useMutation<void, ContactError, ContactDTO>(
+  } = useMutation<void, ContactError, ContactData>(
     async (data) => contactService.send(data),
     {
       onSuccess: () => {
@@ -48,7 +45,9 @@ export default function ContactPage() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-6">
-      <Title size={"h1"}>Contact us</Title>
+      <Title size={"h1"} className="mb-8">
+        Contact us
+      </Title>
 
       <ContactForm
         onSubmit={onSubmit}

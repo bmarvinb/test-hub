@@ -1,15 +1,10 @@
-import { mail } from "@/app/api/services/mail";
+import { mail } from "@/app/api/services/mail-service";
+import { contactSchema } from "@/shared/models/contact-model";
 import { NextResponse } from "next/server";
-import { z } from "zod";
-
-const schema = z.object({
-  email: z.string().email(),
-  question: z.string(),
-});
 
 export async function POST(req: Request) {
   const data = JSON.parse(await req.json());
-  const response = schema.safeParse(data);
+  const response = contactSchema.safeParse(data);
 
   if (!response.success) {
     return NextResponse.json(
@@ -38,7 +33,6 @@ export async function POST(req: Request) {
       }
     );
   } catch (error) {
-    console.error(error);
     return NextResponse.json(
       {
         message: "Error while sending email",
