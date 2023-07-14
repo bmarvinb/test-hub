@@ -8,44 +8,47 @@ import {
   TestEditorModel,
   TestQuestionModel,
 } from "../models/test-editor-model";
-import { QuestionDialogContext, QuestionDialog } from "./QuestionDialog";
+import { QuestionDialog } from "./QuestionDialog";
 import { QuestionsList } from "./QuestionsList";
 import { TEST_FORM_ID, TestForm, TestFormModel } from "./TestForm";
-import { Mode } from "@/lib/form";
-
-type TestEditorCreateMode = {
-  mode: Mode.Create;
-};
-
-type TestEditorEditMode = {
-  mode: Mode.Edit;
-  test: TestEditorModel;
-};
-
-export type TestEditorMode = TestEditorCreateMode | TestEditorEditMode;
 
 export interface TestEditorProps {
-  mode?: TestEditorMode;
+  initialData?: TestEditorModel;
   isLoading?: boolean;
   isError?: boolean;
   onSubmit: (test: TestEditorModel) => void;
 }
 
-function isEditMode(context: TestEditorMode): context is TestEditorEditMode {
-  return context.mode === Mode.Edit;
-}
-
 export const TestEditor = ({
-  mode = { mode: Mode.Create },
-  isLoading = false,
+  initialData,
+  isLoading,
   onSubmit,
 }: TestEditorProps) => {
+  const isEditMode = initialData !== undefined;
   const toast = useToast();
   const [questions, setQuestions] = useState<TestQuestionModel[]>(
-    isEditMode(mode) ? mode.test.questions : []
+    isEditMode ? initialData.questions : []
   );
-  const [questionDialogContext, setQuestionDialogContext] =
-    useState<QuestionDialogContext | null>();
+  const [questionDialogContext, setQuestionDialogContext] = useState<{
+    isOpen: boolean;
+    question?: TestQuestionModel;
+  }>({
+    isOpen: false,
+    question: undefined,
+  });
+
+  const closeDialog = () => {
+    setQuestionDialogContext({
+      isOpen: false,
+    });
+  };
+
+  const openDialog = (question?: TestQuestionModel) => {
+    setQuestionDialogContext({
+      isOpen: true,
+      question,
+    });
+  };
 
   const handleTestEditorFormSubmit = (data: TestFormModel) => {
     if (!questions.length) {
@@ -60,7 +63,7 @@ export const TestEditor = ({
 
   const handleQuestionFormSubmit = (question: TestQuestionModel) => {
     setQuestions((prev) => [...prev, question]);
-    setQuestionDialogContext(null);
+    closeDialog();
     toast.toast({
       title: "Question added",
       description: "Your question has been added to the test",
@@ -68,10 +71,7 @@ export const TestEditor = ({
   };
 
   const handleQuestionEdit = (question: TestQuestionModel) => {
-    setQuestionDialogContext({
-      mode: Mode.Edit,
-      question,
-    });
+    openDialog(question);
   };
 
   const handleQuestionDelete = (index: number) => {
@@ -86,11 +86,7 @@ export const TestEditor = ({
     <>
       <div className="mb-6">
         <TestForm
-          data={
-            isEditMode(mode)
-              ? { mode: Mode.Edit, test: mode.test }
-              : { mode: Mode.Create }
-          }
+          initialData={initialData}
           onSubmit={handleTestEditorFormSubmit}
         />
       </div>
@@ -101,15 +97,15 @@ export const TestEditor = ({
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => setQuestionDialogContext({ mode: Mode.Create })}
+          onClick={() => openDialog()}
         >
           Add question
         </Button>
 
-        {questionDialogContext && (
+        {questionDialogContext.isOpen && (
           <QuestionDialog
-            context={questionDialogContext}
-            onClose={() => setQuestionDialogContext(null)}
+            question={questionDialogContext.question}
+            onClose={closeDialog}
             onQuestionFormSubmit={handleQuestionFormSubmit}
           ></QuestionDialog>
         )}
@@ -124,7 +120,7 @@ export const TestEditor = ({
       </div>
 
       <Button type="submit" form={TEST_FORM_ID} disabled={isLoading}>
-        {isEditMode(mode) ? "Update" : "Create"}
+        {isEditMode ? "Update" : "Create"}
       </Button>
     </>
   );

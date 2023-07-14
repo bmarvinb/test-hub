@@ -12,33 +12,15 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
-import { Mode } from "@/lib/form";
 import { QuestionType } from "@/shared/models/test-model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { NumberInputQuestion } from "../../models/test-editor-model";
 
-type CreateFormData = {
-  mode: Mode.Create;
-};
-
-type EditFormData = {
-  mode: Mode.Edit;
-  question: string;
-  answer: number;
-  tolerance: number;
-};
-
-export type FormData = CreateFormData | EditFormData;
-
 export interface NumberBasedQuestionFormProps {
-  data?: FormData;
+  initialData?: NumberInputQuestion;
   onSubmit: (data: NumberInputQuestion) => void;
-}
-
-function isEditMode(context: FormData): context is EditFormData {
-  return context.mode === Mode.Edit;
 }
 
 const NumberBasedQuestionSchema = z.object({
@@ -48,14 +30,15 @@ const NumberBasedQuestionSchema = z.object({
 });
 
 export const NumberBasedQuestionForm = ({
-  data = { mode: Mode.Create },
+  initialData,
   onSubmit,
 }: NumberBasedQuestionFormProps) => {
-  const defaultValues = isEditMode(data)
+  const isEditMode = initialData !== undefined;
+  const defaultValues = isEditMode
     ? {
-        question: data.question,
-        answer: data.answer,
-        tolerance: data.tolerance,
+        question: initialData.question,
+        answer: initialData.answer,
+        tolerance: initialData.tolerance,
       }
     : {
         answer: 0,
@@ -148,7 +131,7 @@ export const NumberBasedQuestionForm = ({
           type="submit"
           data-testid="choice-based-submit-button"
         >
-          {isEditMode(data) ? "Update" : "Create"}
+          {isEditMode ? "Update" : "Create"}
         </Button>
       </form>
     </Form>

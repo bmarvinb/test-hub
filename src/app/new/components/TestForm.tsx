@@ -10,31 +10,13 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
-import { Mode } from "@/lib/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-export type TestFormModel = z.infer<typeof testFormSchema>;
-
-type CreateFormData = {
-  mode: Mode.Create;
-};
-
-type EditFormData = {
-  mode: Mode.Edit;
-  test: TestFormModel;
-};
-
-export type FormData = CreateFormData | EditFormData;
-
 export interface TestFormProps {
-  data?: FormData;
+  initialData?: TestFormModel;
   onSubmit: (data: TestFormModel) => void;
-}
-
-function isEditMode(context: FormData): context is EditFormData {
-  return context.mode === Mode.Edit;
 }
 
 export const TEST_FORM_ID = "test-editor-form";
@@ -44,19 +26,20 @@ const testFormSchema = z.object({
   description: z.string().min(1, "Description cannot be empty"),
 });
 
-export const TestForm = ({
-  data = { mode: Mode.Create },
-  onSubmit,
-}: TestFormProps) => {
-  const defaultValues = isEditMode(data)
+export type TestFormModel = z.infer<typeof testFormSchema>;
+
+export const TestForm = ({ initialData, onSubmit }: TestFormProps) => {
+  const isEditMode = initialData !== undefined;
+  const defaultValues = isEditMode
     ? {
-        title: data.test.title,
-        description: data.test.description,
+        title: initialData.title,
+        description: initialData.description,
       }
     : {
         title: "",
         description: "",
       };
+
   const form = useForm<TestFormModel>({
     resolver: zodResolver(testFormSchema),
     defaultValues,

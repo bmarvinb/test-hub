@@ -10,32 +10,15 @@ import {
   FormMessage,
 } from "@/components/ui/Form";
 import { Textarea } from "@/components/ui/Textarea";
-import { Mode } from "@/lib/form";
 import { QuestionType } from "@/shared/models/test-model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { TextInputQuestion } from "../../models/test-editor-model";
 
-type CreateFormData = {
-  mode: Mode.Create;
-};
-
-type EditFormData = {
-  mode: Mode.Edit;
-  question: string;
-  answer: string;
-};
-
-export type FormData = CreateFormData | EditFormData;
-
 export interface TextBasedQuestionFormProps {
-  data?: FormData;
+  initialData?: TextInputQuestion;
   onSubmit: (data: TextInputQuestion) => void;
-}
-
-function isEditMode(context: FormData): context is EditFormData {
-  return context.mode === Mode.Edit;
 }
 
 const TextBasedQuestionSchema = z.object({
@@ -44,17 +27,16 @@ const TextBasedQuestionSchema = z.object({
 });
 
 export const TextBasedQuestionForm = ({
-  data = { mode: Mode.Create },
+  initialData,
   onSubmit,
 }: TextBasedQuestionFormProps) => {
-  const defaultValues = isEditMode(data)
+  const isEditMode = initialData !== undefined;
+  const defaultValues = isEditMode
     ? {
-        question: data.question,
-        answer: data.answer,
+        question: initialData.question,
+        answer: initialData.answer,
       }
-    : {
-        tolerance: 0,
-      };
+    : {};
 
   const form = useForm<z.infer<typeof TextBasedQuestionSchema>>({
     resolver: zodResolver(TextBasedQuestionSchema),
@@ -112,7 +94,7 @@ export const TextBasedQuestionForm = ({
           type="submit"
           data-testid="choice-based-submit-button"
         >
-          {isEditMode(data) ? "Update" : "Create"}
+          {isEditMode ? "Update" : "Create"}
         </Button>
       </form>
     </Form>
