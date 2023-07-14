@@ -14,30 +14,30 @@ import {
   TestQuestionModel,
   TextInputQuestion,
 } from "../models/test-editor-model";
-import { CreateQuestionForm, InitialData } from "./QuestionForm";
+import { CreateQuestionForm, QuestionFormContext } from "./QuestionForm";
 import { QuestionTypePicker } from "./QuestionTypePicker";
 import { QuestionType } from "@/shared/models/test-model";
 
-function getQuestionFormInitialData(
+function getQuestionFormContext(
   type: QuestionType,
   question?: TestQuestionModel
-): InitialData {
+): QuestionFormContext {
   switch (type) {
     case QuestionType.SingleChoice:
     case QuestionType.MultipleChoice:
       return {
         type,
-        question: question ? (question as ChoiceBasedQuestion) : undefined,
+        initialData: question ? (question as ChoiceBasedQuestion) : undefined,
       };
     case QuestionType.NumberInput:
       return {
         type,
-        question: question ? (question as NumberInputQuestion) : undefined,
+        initialData: question ? (question as NumberInputQuestion) : undefined,
       };
     case QuestionType.TextInput:
       return {
         type,
-        question: question ? (question as TextInputQuestion) : undefined,
+        initialData: question ? (question as TextInputQuestion) : undefined,
       };
   }
 }
@@ -87,7 +87,7 @@ export const QuestionDialog = ({
             onChange={setQuestionType}
           />
           <CreateQuestionForm
-            initialData={getQuestionFormInitialData(questionType, question)}
+            context={getQuestionFormContext(questionType, question)}
             onSubmit={onQuestionFormSubmit}
           />
         </div>

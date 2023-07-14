@@ -11,34 +11,34 @@ import { ChoiceBasedQuestionForm } from "./questions/ChoiceBasedQuestionForm";
 import { NumberBasedQuestionForm } from "./questions/NumberBasedQuestionForm";
 import { TextBasedQuestionForm } from "./questions/TextBasedQuestionForm";
 
-export type InitialData =
+export type QuestionFormContext =
   | {
       type: QuestionType.SingleChoice | QuestionType.MultipleChoice;
-      question?: ChoiceBasedQuestion;
+      initialData?: ChoiceBasedQuestion;
     }
   | {
       type: QuestionType.NumberInput;
-      question?: NumberInputQuestion;
+      initialData?: NumberInputQuestion;
     }
   | {
       type: QuestionType.TextInput;
-      question?: TextInputQuestion;
+      initialData?: TextInputQuestion;
     };
 
 export interface CreateQuestionFormProps {
-  initialData: InitialData;
+  context: QuestionFormContext;
   onSubmit: (data: TestQuestionModel) => void;
 }
 
 export const CreateQuestionForm = ({
-  initialData,
+  context,
   onSubmit,
 }: CreateQuestionFormProps) => {
-  switch (initialData?.type) {
+  switch (context.type) {
     case QuestionType.SingleChoice:
       return (
         <ChoiceBasedQuestionForm
-          initialData={initialData.question}
+          initialData={context.initialData}
           singleChoice={true}
           onSubmit={onSubmit}
         />
@@ -46,7 +46,7 @@ export const CreateQuestionForm = ({
     case QuestionType.MultipleChoice:
       return (
         <ChoiceBasedQuestionForm
-          initialData={initialData.question}
+          initialData={context.initialData}
           singleChoice={false}
           onSubmit={onSubmit}
         />
@@ -54,14 +54,14 @@ export const CreateQuestionForm = ({
     case QuestionType.NumberInput:
       return (
         <NumberBasedQuestionForm
-          initialData={initialData.question}
+          initialData={context.initialData}
           onSubmit={onSubmit}
         />
       );
     case QuestionType.TextInput:
       return (
         <TextBasedQuestionForm
-          initialData={initialData.question}
+          initialData={context.initialData}
           onSubmit={onSubmit}
         />
       );
